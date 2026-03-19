@@ -6,6 +6,7 @@ namespace LaravelShopifySdk\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use LaravelShopifySdk\Models\InventoryLevel;
 
 /**
  * Shopify Variant Model
@@ -94,24 +95,23 @@ class Variant extends Model
     }
 
     /**
-     * Get the variant's inventory quantity from payload
+     * Get the variant's inventory quantity from payload or inventory_levels table
      * Falls back to summing inventory levels if direct quantity not available
      */
     public function getInventoryQuantityAttribute(): ?int
     {
-        // First try direct inventoryQuantity
+        // First try direct inventoryQuantity from payload
         if (isset($this->payload['inventoryQuantity'])) {
             return (int) $this->payload['inventoryQuantity'];
         }
 
-        // Try to sum from inventory levels in inventoryItem
+        // Try to sum from inventory levels in payload (inventoryItem)
         $inventoryLevels = $this->payload['inventoryItem']['inventoryLevels']['edges'] ?? [];
         if (!empty($inventoryLevels)) {
             $total = 0;
             foreach ($inventoryLevels as $edge) {
                 $quantities = $edge['node']['quantities'] ?? [];
                 foreach ($quantities as $qty) {
-                    // Sum if name is 'available' OR if name is not set (assume it's available)
                     $name = $qty['name'] ?? 'available';
                     if ($name === 'available') {
                         $total += (int) ($qty['quantity'] ?? 0);
@@ -119,6 +119,15 @@ class Variant extends Model
                 }
             }
             return $total;
+        }
+
+        // Fall back to inventory_levels table if we have inventory_item_id
+        if ($this->inventory_item_id) {
+            $total = InventoryLevel::where('store_id', $this->store_id)
+                ->where('inventory_item_id', $this->inventory_item_id)
+                ->sum('available');
+
+            return $total > 0 ? (int) $total : null;
         }
 
         return null;

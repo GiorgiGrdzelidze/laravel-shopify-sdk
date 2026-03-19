@@ -49,7 +49,10 @@ class CustomerSyncer implements EntitySyncerInterface
                             'email' => $node['email'] ?? null,
                             'first_name' => $node['firstName'] ?? null,
                             'last_name' => $node['lastName'] ?? null,
+                            'phone' => $node['phone'] ?? null,
                             'state' => $node['state'] ?? null,
+                            'orders_count' => $node['numberOfOrders'] ?? 0,
+                            'total_spent' => (float) ($node['amountSpent']['amount'] ?? 0),
                             'payload' => $node,
                             'shopify_created_at' => $node['createdAt'] ?? null,
                             'shopify_updated_at' => $node['updatedAt'] ?? null,
@@ -86,7 +89,13 @@ class CustomerSyncer implements EntitySyncerInterface
                 email
                 firstName
                 lastName
+                phone
                 state
+                numberOfOrders
+                amountSpent {
+                  amount
+                  currencyCode
+                }
                 createdAt
                 updatedAt
               }

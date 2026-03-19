@@ -10,6 +10,7 @@ use LaravelShopifySdk\Auth\StoreRepository;
 use LaravelShopifySdk\Clients\GraphQLClient;
 use LaravelShopifySdk\Clients\RestClient;
 use LaravelShopifySdk\Clients\ShopifyClient;
+use LaravelShopifySdk\Commands\SetupStoreCommand;
 use LaravelShopifySdk\Commands\SyncAllCommand;
 use LaravelShopifySdk\Commands\SyncCustomersCommand;
 use LaravelShopifySdk\Commands\SyncInventoryCommand;
@@ -231,6 +232,7 @@ class ShopifyServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                SetupStoreCommand::class,
                 SyncStoresCommand::class,
                 SyncProductsCommand::class,
                 SyncOrdersCommand::class,

@@ -108,7 +108,7 @@ class ProductSyncer implements EntitySyncerInterface
 
         return <<<GQL
         query(\$cursor: String) {
-          products(first: 50, after: \$cursor{$updatedAtFilter}) {
+          products(first: 25, after: \$cursor{$updatedAtFilter}) {
             edges {
               node {
                 id
@@ -126,16 +126,7 @@ class ProductSyncer implements EntitySyncerInterface
                   url
                   altText
                 }
-                images(first: 10) {
-                  edges {
-                    node {
-                      id
-                      url
-                      altText
-                    }
-                  }
-                }
-                variants(first: 100) {
+                variants(first: 50) {
                   edges {
                     node {
                       id
@@ -146,27 +137,8 @@ class ProductSyncer implements EntitySyncerInterface
                       compareAtPrice
                       createdAt
                       updatedAt
-                      image {
-                        id
-                        url
-                        altText
-                      }
                       inventoryItem {
                         id
-                        inventoryLevels(first: 10) {
-                          edges {
-                            node {
-                              quantities(names: ["available", "on_hand"]) {
-                                name
-                                quantity
-                              }
-                              location {
-                                id
-                                name
-                              }
-                            }
-                          }
-                        }
                       }
                     }
                   }

@@ -12,7 +12,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
@@ -152,24 +151,16 @@ class ProductResource extends Resource
                     ->description('Product description displayed on your store')
                     ->icon('heroicon-o-document-text')
                     ->schema([
-                        RichEditor::make('description_html')
+                        Placeholder::make('description_html')
                             ->label('')
-                            ->toolbarButtons([
-                                'bold',
-                                'italic',
-                                'underline',
-                                'strike',
-                                'h2',
-                                'h3',
-                                'bulletList',
-                                'orderedList',
-                                'link',
-                                'undo',
-                                'redo',
-                            ])
-                            ->columnSpanFull()
-                            ->formatStateUsing(fn (?Product $record) => $record?->payload['descriptionHtml'] ?? $record?->payload['description'] ?? '')
-                            ->dehydrated(false),
+                            ->content(function (?Product $record) {
+                                $html = $record?->payload['descriptionHtml'] ?? $record?->payload['description'] ?? '';
+                                if (empty($html)) {
+                                    return new \Illuminate\Support\HtmlString('<p style="color: #9ca3af; font-style: italic;">No description available</p>');
+                                }
+                                return new \Illuminate\Support\HtmlString('<div class="prose prose-sm max-w-none">' . $html . '</div>');
+                            })
+                            ->columnSpanFull(),
                     ])
                     ->collapsible()
                     ->columnSpanFull(),

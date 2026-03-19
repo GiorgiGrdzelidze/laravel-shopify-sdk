@@ -148,6 +148,7 @@ class OrderResource extends Resource
         $isSandboxMode = config('shopify.filament.testing_crud_enabled', false);
 
         return $table
+            ->header(view('shopify::filament.components.order-summary-header'))
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('Order #')

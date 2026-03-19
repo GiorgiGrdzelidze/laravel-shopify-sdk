@@ -90,6 +90,20 @@ class InventorySyncer implements EntitySyncerInterface
                         foreach ($node['inventoryLevels']['edges'] as $levelEdge) {
                             $levelNode = $levelEdge['node'];
 
+                            // Extract available quantity from quantities array (2026+ API)
+                            $available = null;
+                            $onHand = null;
+                            if (isset($levelNode['quantities'])) {
+                                foreach ($levelNode['quantities'] as $qty) {
+                                    if ($qty['name'] === 'available') {
+                                        $available = $qty['quantity'];
+                                    }
+                                    if ($qty['name'] === 'on_hand') {
+                                        $onHand = $qty['quantity'];
+                                    }
+                                }
+                            }
+
                             InventoryLevel::updateOrCreate(
                                 [
                                     'store_id' => $store->id,
@@ -97,7 +111,8 @@ class InventorySyncer implements EntitySyncerInterface
                                     'location_id' => $levelNode['location']['id'] ?? null,
                                 ],
                                 [
-                                    'available' => $levelNode['available'] ?? null,
+                                    'available' => $available,
+                                    'on_hand' => $onHand,
                                     'payload' => $levelNode,
                                     'shopify_updated_at' => $levelNode['updatedAt'] ?? null,
                                 ]
@@ -129,10 +144,15 @@ class InventorySyncer implements EntitySyncerInterface
                 inventoryLevels(first: 10) {
                   edges {
                     node {
-                      available
+                      id
                       updatedAt
+                      quantities(names: ["available", "on_hand"]) {
+                        name
+                        quantity
+                      }
                       location {
                         id
+                        name
                       }
                     }
                   }

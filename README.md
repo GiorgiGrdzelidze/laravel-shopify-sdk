@@ -29,7 +29,7 @@
 
 ## ✨ Features
 
-- 🔐 **OAuth Authentication** - Authorization Code Grant flow for multi-store installations
+- 🔐 **OAuth Authentication** - Authorization Code Grant & Client Credentials Grant (2026+) flows
 - 🪝 **Webhook Management** - Secure webhook verification and processing with HMAC-SHA256
 - ⚡ **GraphQL & REST APIs** - Unified client with automatic rate limiting and retries
 - 🔄 **Data Mirroring** - Sync products, orders, customers, and inventory to your database
@@ -183,11 +183,24 @@ SHOPIFY_SHOP_DOMAIN=your-store.myshopify.com
 SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxx
 ```
 
-**How to get your access token:**
+**How to get your access token (Legacy - before Jan 2026):**
 1. Go to your Shopify Admin
 2. Settings → Apps and sales channels → Develop apps
 3. Create a custom app with required scopes
 4. Install the app and copy the Admin API access token
+
+**How to get your access token (2026+ - Client Credentials Grant):**
+
+> ⚠️ **Important:** Starting January 1, 2026, Shopify no longer allows creating legacy custom apps in the store admin. New apps must be created via the Developer Dashboard and use OAuth2 Client Credentials Grant.
+
+1. Create your app in the [Shopify Developer Dashboard](https://partners.shopify.com)
+2. Get your **Client ID** and **Client Secret**
+3. Install the app to your store
+4. Use the setup command with `--oauth` flag to obtain access token:
+
+```bash
+php artisan shopify:setup --oauth --custom-domain=your-domain.com --currency=USD
+```
 
 #### Option 2: Multi-Store Mode (For multiple stores with OAuth)
 
@@ -346,6 +359,37 @@ The package stores all webhook events in the `shopify_webhook_events` table for:
 - Retry capability
 
 Webhooks are processed asynchronously by default. The `app/uninstalled` webhook automatically marks stores as inactive.
+
+### 🏪 Store Setup Command
+
+The `shopify:setup` command creates or updates a store from environment credentials:
+
+```bash
+# Basic setup (uses SHOPIFY_SHOP_DOMAIN and SHOPIFY_ACCESS_TOKEN from .env)
+php artisan shopify:setup
+
+# With custom domain and currency
+php artisan shopify:setup --custom-domain=lumino.ge --currency=GEL
+
+# Using OAuth2 Client Credentials Grant (2026+ method)
+php artisan shopify:setup --oauth --custom-domain=lumino.ge --currency=GEL
+
+# With explicit options
+php artisan shopify:setup --domain=your-store.myshopify.com --token=shpat_xxx
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `--domain` | Shop domain (defaults to `SHOPIFY_SHOP_DOMAIN`) |
+| `--token` | Access token (defaults to `SHOPIFY_ACCESS_TOKEN`) |
+| `--custom-domain` | Custom domain (e.g., `lumino.ge`) |
+| `--currency` | Store currency (e.g., `GEL`, `USD`) |
+| `--oauth` | Use OAuth2 Client Credentials Grant to obtain token |
+
+The `--oauth` flag uses `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET` to programmatically obtain an access token via the Client Credentials Grant flow.
+
+---
 
 ### 🔄 Data Synchronization
 
@@ -515,8 +559,9 @@ composer require filament/filament:"^5.0"
 
 - 📱 **Mobile-first design** - Responsive tables and forms
 - 📋 **Resources** - Stores, Products, Variants, Orders, Customers, Locations, Inventory, Webhooks, Sync Runs
-- 📊 **Widgets** - Sync health dashboard, order statistics, product counts
-- ⚡ **Actions** - Manual sync triggers, view JSON payloads
+- 📊 **Widgets** - Sync health dashboard, order statistics, product counts, top selling products, inventory alerts
+- ⚡ **Sync Actions** - One-click sync buttons on Products, Orders, Customers pages
+- 📈 **Filtered Order Summary** - Real-time statistics when filters are applied
 - 🔍 **Filters** - Store, status, date ranges
 - ⚡ **Cached queries** - Widget data cached for 5 minutes
 - 🎨 **Auto-discovery** - Resources and widgets auto-register when enabled
@@ -577,6 +622,36 @@ Or in config:
 - Developing custom filters and actions
 - Populating test data for demos
 - Debugging relationship queries
+
+### ⚡ Sync Action Buttons
+
+Each resource page includes sync action buttons in the header:
+
+**Products Page:**
+- **Sync Products** - Sync all products and variants
+- **Sync Inventory** - Sync inventory levels for all locations
+- **Sync All** - Sync both products and inventory
+
+**Orders Page:**
+- **Sync Orders** - Sync all orders from Shopify
+
+**Customers Page:**
+- **Sync Customers** - Sync all customers from Shopify
+
+All sync actions show a confirmation modal and display the count of synced items upon completion.
+
+### 📈 Filtered Order Summary
+
+When filters are applied on the Orders page, a summary bar appears showing:
+
+| Metric | Description |
+|--------|-------------|
+| **Filtered Orders** | Count of orders matching filters |
+| **Total Revenue** | Sum of filtered order totals |
+| **Average Order** | Average order value |
+| **% of Total** | Percentage of all orders |
+
+The summary bar uses color-coded cards with icons and only appears when filters are active.
 
 ### 📊 Sync Health Widget
 
@@ -766,6 +841,19 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 ---
 
 ## 📝 Changelog
+
+### 1.1.0 (2026-03-19)
+
+**New Features** 🚀
+
+- ✅ `shopify:setup` command for easy store creation from .env
+- ✅ OAuth2 Client Credentials Grant support (2026+ Shopify apps)
+- ✅ Custom domain and currency fields for stores
+- ✅ Sync action buttons on Products, Orders, Customers pages
+- ✅ Filtered order summary cards with real-time statistics
+- ✅ Top Selling Products widget with star ratings
+- ✅ Inventory Alert widget for low stock items
+- ✅ Improved GraphQL query cost optimization
 
 ### 1.0.0 (2026-03-16)
 

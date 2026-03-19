@@ -64,14 +64,10 @@ class SyncHealthWidget extends BaseWidget
                 Tables\Columns\TextColumn::make('counts')
                     ->label('Records')
                     ->formatStateUsing(function ($state) {
-                        if (empty($state)) {
+                        if (empty($state) || !is_array($state)) {
                             return '—';
                         }
-                        $counts = is_array($state) ? $state : json_decode($state, true);
-                        if (empty($counts)) {
-                            return '—';
-                        }
-                        return collect($counts)
+                        return collect($state)
                             ->map(fn ($count, $key) => "{$count} " . str($key)->singular()->when($count !== 1, fn ($s) => $s->plural()))
                             ->join(', ');
                     }),

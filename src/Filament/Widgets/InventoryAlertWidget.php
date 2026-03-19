@@ -7,6 +7,7 @@ namespace LaravelShopifySdk\Filament\Widgets;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Support\Facades\DB;
 use LaravelShopifySdk\Models\Variant;
 
 class InventoryAlertWidget extends BaseWidget
@@ -22,13 +23,25 @@ class InventoryAlertWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
+        $inventoryTable = config('shopify.tables.inventory_levels', 'shopify_inventory_levels');
+        $variantsTable = config('shopify.tables.variants', 'shopify_variants');
+
         return $table
             ->query(
                 Variant::query()
                     ->with(['product:id,title,status'])
                     ->whereHas('product', fn ($q) => $q->where('status', 'ACTIVE'))
-                    ->whereRaw("JSON_EXTRACT(payload, '$.inventoryQuantity') > 0")
-                    ->orderByRaw("JSON_EXTRACT(payload, '$.inventoryQuantity') DESC")
+                    ->whereNotNull('inventory_item_id')
+                    ->select("{$variantsTable}.*")
+                    ->selectSub(
+                        DB::table($inventoryTable)
+                            ->selectRaw('COALESCE(SUM(available), 0)')
+                            ->whereColumn("{$inventoryTable}.inventory_item_id", "{$variantsTable}.inventory_item_id")
+                            ->whereColumn("{$inventoryTable}.store_id", "{$variantsTable}.store_id"),
+                        'total_stock'
+                    )
+                    ->having('total_stock', '>', 0)
+                    ->orderBy('total_stock', 'desc')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('product.title')
@@ -38,9 +51,8 @@ class InventoryAlertWidget extends BaseWidget
                     ->label('Variant')
                     ->placeholder('Default')
                     ->limit(20),
-                Tables\Columns\TextColumn::make('payload')
+                Tables\Columns\TextColumn::make('total_stock')
                     ->label('In Stock')
-                    ->getStateUsing(fn ($record) => $record->payload['inventoryQuantity'] ?? 0)
                     ->formatStateUsing(fn ($state) => number_format((int) $state))
                     ->badge()
                     ->color(fn ($state) => match (true) {

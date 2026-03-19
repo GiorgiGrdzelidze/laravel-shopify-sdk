@@ -70,11 +70,13 @@ class CustomerResource extends Resource
                     ->label('Orders')
                     ->alignCenter()
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_spent')
                     ->money(fn ($record) => $record->store?->currency ?? 'USD')
                     ->weight('semibold')
-                    ->color('success'),
+                    ->color('success')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('state')
                     ->badge()
                     ->colors([

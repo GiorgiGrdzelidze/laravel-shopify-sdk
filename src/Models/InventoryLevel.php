@@ -31,6 +31,7 @@ class InventoryLevel extends Model
         'inventory_item_id',
         'location_id',
         'available',
+        'on_hand',
         'payload',
         'shopify_updated_at',
     ];
@@ -38,6 +39,7 @@ class InventoryLevel extends Model
     protected $casts = [
         'payload' => 'array',
         'available' => 'integer',
+        'on_hand' => 'integer',
         'shopify_updated_at' => 'datetime',
     ];
 

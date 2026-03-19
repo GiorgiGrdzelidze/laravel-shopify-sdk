@@ -35,7 +35,10 @@ class Customer extends Model
         'email',
         'first_name',
         'last_name',
+        'phone',
         'state',
+        'orders_count',
+        'total_spent',
         'payload',
         'shopify_created_at',
         'shopify_updated_at',
@@ -58,24 +61,8 @@ class Customer extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function getOrdersCountAttribute(): int
-    {
-        return (int) ($this->payload['ordersCount'] ?? $this->payload['numberOfOrders'] ?? 0);
-    }
-
-    public function getTotalSpentAttribute(): float
-    {
-        $totalSpent = $this->payload['totalSpent'] ?? $this->payload['amountSpent']['amount'] ?? 0;
-        return (float) $totalSpent;
-    }
-
     public function getFullNameAttribute(): string
     {
         return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
-    }
-
-    public function getPhoneAttribute(): ?string
-    {
-        return $this->payload['phone'] ?? null;
     }
 }
