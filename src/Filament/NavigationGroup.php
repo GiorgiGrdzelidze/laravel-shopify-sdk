@@ -7,4 +7,5 @@ namespace LaravelShopifySdk\Filament;
 enum NavigationGroup: string
 {
     case Shopify = 'Shopify';
+    case AccessControl = 'Access Control';
 }

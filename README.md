@@ -640,6 +640,171 @@ Each resource page includes sync action buttons in the header:
 
 All sync actions show a confirmation modal and display the count of synced items upon completion.
 
+### 📦 Collections
+
+Full CRUD for Shopify collections with bi-directional sync:
+
+**Features:**
+- ✅ **Sync from Shopify** - Import all Smart and Custom collections
+- ✅ **Create Collections** - Create new custom collections locally
+- ✅ **Edit Collections** - Update title, description, handle, image
+- ✅ **Manage Products** - Add/remove products from collections
+- ✅ **Push to Shopify** - Sync local changes to Shopify (with confirmation)
+- ✅ **Image Upload** - Upload local images or use external URLs
+- ✅ **Smart Rules Display** - Human-readable rule formatting (e.g., "Tag equals paintglow")
+- ✅ **Product Previews** - Visual grid of products in collection
+
+**Sync Command:**
+
+```bash
+# Sync all collections from Shopify
+php artisan shopify:sync:collections
+
+# Sync for specific store
+php artisan shopify:sync:collections --store=your-store.myshopify.com
+```
+
+**Collection Types:**
+- **Smart Collections** - Auto-populated based on rules (read-only, synced from Shopify)
+- **Custom Collections** - Manually curated product lists (full CRUD)
+
+**Push to Shopify:**
+
+When editing a collection, use the "Push to Shopify" button to:
+1. Create new collection in Shopify (if not yet synced)
+2. Update existing collection details
+3. Sync products to the Shopify collection
+
+**Image Requirements for Shopify:**
+- Must be a publicly accessible URL (https://)
+- Local uploads work locally but won't sync to Shopify
+- Supported formats: PNG, JPG, WEBP, GIF
+
+**Filament Resource Features:**
+- Collection list with images, type badges, product counts
+- View page with product grid and smart rules
+- Edit page with product multi-select
+- Products relation manager for add/remove
+
+### 🔐 Roles & Permissions
+
+Built-in role-based access control for multi-user environments:
+
+**Default Roles:**
+
+| Role | Description |
+|------|-------------|
+| **Super Admin** | Full access to all features and settings |
+| **Store Manager** | Full access to assigned stores |
+| **Product Manager** | Manage products and inventory |
+| **Order Manager** | Manage orders and customers |
+| **Viewer** | Read-only access (default for new users) |
+
+**Permission Groups:**
+- `stores.*` - View, create, edit, delete stores
+- `products.*` - View, create, edit, delete, push, pull products
+- `orders.*` - View, edit, delete orders
+- `customers.*` - View, edit, delete customers
+- `inventory.*` - View, edit inventory
+- `sync.*` - Run sync, view logs
+- `settings.*` - Manage roles, permissions, users
+
+**Setup:**
+
+```bash
+# Run the roles migration
+php artisan migrate
+
+# Seed default roles and permissions (optional)
+php artisan db:seed --class="LaravelShopifySdk\\Database\\Seeders\\ShopifyRolesAndPermissionsSeeder"
+
+# Assign Super Admin role to a user
+php artisan shopify:assign-admin your-email@example.com
+```
+
+**Add to your User model:**
+
+```php
+use LaravelShopifySdk\Traits\HasShopifyRoles;
+
+class User extends Authenticatable
+{
+    use HasShopifyRoles;
+}
+```
+
+**Usage in code:**
+
+```php
+// Check permissions
+if ($user->hasShopifyPermission('products.edit')) {
+    // Can edit products
+}
+
+// Check roles
+if ($user->hasShopifyRole('super-admin')) {
+    // Is super admin
+}
+
+// Assign role
+$user->assignShopifyRole('product-manager');
+
+// Check store access (for multi-store)
+if ($user->canAccessStore($store)) {
+    // Can access this store
+}
+```
+
+**Filament Resources:**
+- **Roles** - Create/edit roles with permission checkboxes
+- **Permissions** - Manage individual permissions by group
+
+### 🧪 Sandbox CRUD Mode (Testing)
+
+For testing UI flows, filtering, and relationships, enable Sandbox CRUD mode:
+
+```env
+SHOPIFY_TESTING_CRUD_ENABLED=true
+```
+
+Or in config:
+
+```php
+// config/shopify.php
+'filament' => [
+    'testing_crud_enabled' => env('SHOPIFY_TESTING_CRUD_ENABLED', false),
+],
+```
+
+**When enabled:**
+- Create/Edit/Delete actions appear for Products, Orders, Customers
+- ⚠️ **Sandbox Mode** warning badge displayed in forms
+- JSON payload editor available for raw data manipulation
+- Changes are **LOCAL ONLY** - they do NOT sync back to Shopify
+
+**Use cases:**
+- Testing Filament UI components
+- Developing custom filters and actions
+- Populating test data for demos
+- Debugging relationship queries
+
+### ⚡ Sync Action Buttons
+
+Each resource page includes sync action buttons in the header:
+
+**Products Page:**
+- **Sync Products** - Sync all products and variants
+- **Sync Inventory** - Sync inventory levels for all locations
+- **Sync All** - Sync both products and inventory
+
+**Orders Page:**
+- **Sync Orders** - Sync all orders from Shopify
+
+**Customers Page:**
+- **Sync Customers** - Sync all customers from Shopify
+
+All sync actions show a confirmation modal and display the count of synced items upon completion.
+
 ### 📈 Filtered Order Summary
 
 When filters are applied on the Orders page, a summary bar appears showing:
@@ -841,6 +1006,28 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 ---
 
 ## 📝 Changelog
+
+### 1.2.0 (2026-03-20)
+
+**New Features** 🚀
+
+- ✅ **Collections Full CRUD** - Create, edit, delete collections with Shopify sync
+- ✅ **Collection Products** - Add/remove products from collections via relation manager
+- ✅ **Push to Shopify** - Sync local collections to Shopify with confirmation
+- ✅ **Collection Images** - Upload local images or use external URLs
+- ✅ **Smart Rules Display** - Human-readable formatting (e.g., "Tag equals paintglow")
+- ✅ **Product Images Sync** - Sync `featured_image_url` and `images` array from Shopify
+- ✅ **Roles & Permissions** - Built-in RBAC with 5 default roles and 27 permissions
+- ✅ **Role CRUD** - Filament resource for managing roles with permission checkboxes
+- ✅ **Permission CRUD** - Filament resource for managing permissions by group
+- ✅ **User Management** - Assign roles and store access to users
+- ✅ **HasShopifyRoles Trait** - Easy integration with your User model
+- ✅ **Store-level Access Control** - Restrict users to specific stores
+- ✅ **Super Admin Command** - `shopify:assign-admin` to assign admin role
+- ✅ **Product Image Lightbox** - Click to view full-size images in popup
+- ✅ **Checkbox Image Removal** - Visual selection for removing product images
+- ✅ **Pull from Shopify** - Sync individual products from edit page
+- ✅ **Variant Creation** - Create products with multiple variants
 
 ### 1.1.0 (2026-03-19)
 

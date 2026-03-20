@@ -29,6 +29,7 @@ use LaravelShopifySdk\Clients\GraphQLClient;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\ProductResource\Pages;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Product;
 use LaravelShopifySdk\Models\Store;
 use LaravelShopifySdk\Services\ProductService;
@@ -36,6 +37,8 @@ use BackedEnum;
 
 class ProductResource extends Resource
 {
+    use HasShopifyPermissions;
+
     protected static ?string $model = Product::class;
 
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedCube;
@@ -43,6 +46,11 @@ class ProductResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 2;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'products';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -185,30 +193,49 @@ class ProductResource extends Resource
                                 }
 
                                 $productId = $record->id;
-                                $html = '<div style="display: flex; flex-wrap: wrap; gap: 12px;">';
+                                $isLocal = str_starts_with($record->shopify_id, 'local_');
+                                $galleryId = 'gallery-' . $productId;
+
+                                // Lightbox overlay
+                                $html = '
+                                <div id="lightbox-' . $productId . '" onclick="this.style.display=\'none\'" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; cursor: pointer; justify-content: center; align-items: center;">
+                                    <img id="lightbox-img-' . $productId . '" src="" alt="" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 8px;" />
+                                    <button onclick="event.stopPropagation(); document.getElementById(\'lightbox-' . $productId . '\').style.display=\'none\';" style="position: absolute; top: 20px; right: 20px; background: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">✕</button>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px;">';
 
                                 foreach ($record->images as $index => $image) {
                                     $url = $image['url'] ?? '';
                                     $alt = htmlspecialchars($image['altText'] ?? 'Product image ' . ($index + 1));
-                                    $mainBadge = $index === 0
-                                        ? '<span style="position: absolute; top: -6px; left: -6px; background: #3b82f6; color: white; font-size: 10px; padding: 2px 6px; border-radius: 9999px; font-weight: 500; z-index: 10;">Main</span>'
-                                        : '';
+                                    $isPending = $image['pending'] ?? false;
+
+                                    $badge = '';
+                                    if ($isPending) {
+                                        $badge = '<span style="position: absolute; top: -6px; left: -6px; background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 9999px; font-weight: 500; z-index: 10;">Pending</span>';
+                                    } elseif ($index === 0) {
+                                        $badge = '<span style="position: absolute; top: -6px; left: -6px; background: #3b82f6; color: white; font-size: 10px; padding: 2px 6px; border-radius: 9999px; font-weight: 500; z-index: 10;">Main</span>';
+                                    }
 
                                     $html .= '
                                     <div style="position: relative; width: 72px; height: 72px;">
-                                        <a href="' . $url . '" target="_blank" style="display: block; width: 100%; height: 100%;">
+                                        <div onclick="document.getElementById(\'lightbox-img-' . $productId . '\').src=\'' . $url . '\'; document.getElementById(\'lightbox-' . $productId . '\').style.display=\'flex\';" style="display: block; width: 100%; height: 100%; cursor: pointer;">
                                             <img
                                                 src="' . $url . '"
                                                 alt="' . $alt . '"
-                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer;"
+                                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb;"
                                             />
-                                        </a>
-                                        ' . $mainBadge . '
+                                        </div>
+                                        ' . $badge . '
                                     </div>';
                                 }
 
-                                $html .= '</div>
-                                <p style="font-size: 12px; color: #9ca3af; margin-top: 12px;">Click on an image to open in new tab. Use Shopify Admin to add or delete images.</p>';
+                                $html .= '</div>';
+
+                                if ($isLocal) {
+                                    $html .= '<p style="font-size: 12px; color: #f59e0b; margin-top: 12px;">⚠️ This is a local product. Click "Push to Shopify" to upload images.</p>';
+                                } else {
+                                    $html .= '<p style="font-size: 12px; color: #9ca3af; margin-top: 12px;">Click on an image to view full size. Use Edit to add or remove images.</p>';
+                                }
 
                                 return new \Illuminate\Support\HtmlString($html);
                             })
@@ -301,7 +328,8 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->limit(50)
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->description(fn (Product $record) => str_starts_with($record->shopify_id, 'local_') ? '⚠️ Not pushed to Shopify' : null),
                 Tables\Columns\TextColumn::make('vendor')
                     ->searchable()
                     ->sortable()
@@ -386,7 +414,7 @@ class ProductResource extends Resource
                             ? $record->store->getProductUrl($record->handle)
                             : null)
                         ->openUrlInNewTab()
-                        ->visible(fn (Product $record): bool => filled($record->handle)),
+                        ->visible(fn (Product $record): bool => filled($record->handle) && !str_starts_with($record->shopify_id, 'local_')),
                     Action::make('sync_from_shopify')
                         ->label('Sync from Shopify')
                         ->icon('heroicon-o-arrow-down-tray')
@@ -394,6 +422,7 @@ class ProductResource extends Resource
                         ->requiresConfirmation()
                         ->modalHeading('Sync Product from Shopify')
                         ->modalDescription('This will fetch the latest product data from Shopify and update the local record.')
+                        ->visible(fn (Product $record): bool => !str_starts_with($record->shopify_id, 'local_'))
                         ->action(function (Product $record) {
                             try {
                                 $service = new ProductService(new GraphQLClient());
@@ -413,26 +442,173 @@ class ProductResource extends Resource
                         }),
                     ViewAction::make(),
                     EditAction::make(),
-                    Action::make('update_on_shopify')
+                    Action::make('create_on_shopify')
                         ->label('Push to Shopify')
+                        ->icon('heroicon-o-cloud-arrow-up')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Create Product on Shopify')
+                        ->modalDescription('This will create the product on Shopify with all data including images, options, and variants.')
+                        ->visible(fn (Product $record): bool => str_starts_with($record->shopify_id, 'local_'))
+                        ->action(function (Product $record) {
+                            try {
+                                $service = new ProductService(new GraphQLClient());
+                                $store = $record->store;
+                                $payload = $record->payload;
+
+                                $productData = [
+                                    'title' => $record->title,
+                                    'handle' => $record->handle,
+                                    'descriptionHtml' => $payload['descriptionHtml'] ?? '',
+                                    'vendor' => $record->vendor,
+                                    'productType' => $record->product_type,
+                                    'status' => $record->status,
+                                    'tags' => $record->tags,
+                                ];
+
+                                // Handle media - upload local files first, then add URLs
+                                if (!empty($payload['media'])) {
+                                    $mediaItems = [];
+                                    $localPaths = [];
+
+                                    foreach ($payload['media'] as $mediaItem) {
+                                        if (!empty($mediaItem['localPath'])) {
+                                            $localPaths[] = $mediaItem['localPath'];
+                                        } else {
+                                            $mediaItems[] = $mediaItem;
+                                        }
+                                    }
+
+                                    // Upload local files via staged uploads
+                                    if (!empty($localPaths)) {
+                                        $resourceUrls = $service->uploadFilesToShopify($store, $localPaths);
+                                        foreach ($resourceUrls as $url) {
+                                            $mediaItems[] = [
+                                                'originalSource' => $url,
+                                                'alt' => '',
+                                                'mediaContentType' => 'IMAGE',
+                                            ];
+                                        }
+                                    }
+
+                                    if (!empty($mediaItems)) {
+                                        $productData['media'] = $mediaItems;
+                                    }
+                                }
+
+                                if (!empty($payload['seo'])) {
+                                    $productData['seo'] = $payload['seo'];
+                                }
+
+                                // Add variants if present
+                                if (!empty($payload['variants'])) {
+                                    $productData['variants'] = $payload['variants'];
+                                }
+
+                                $newProduct = $service->create($store, $productData);
+                                $record->delete();
+
+                                $variantCount = $newProduct->variants()->count();
+
+                                Notification::make()
+                                    ->title('Product Created on Shopify')
+                                    ->body("Product '{$newProduct->title}' created with {$variantCount} variant(s).")
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Create Failed')
+                                    ->body($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                    Action::make('update_on_shopify')
+                        ->label('Push Changes')
                         ->icon('heroicon-o-arrow-up-tray')
                         ->color('success')
                         ->requiresConfirmation()
                         ->modalHeading('Push Changes to Shopify')
-                        ->modalDescription('This will update the product on Shopify with the current local data.')
+                        ->modalDescription('This will update the product on Shopify including any image changes.')
+                        ->visible(fn (Product $record): bool => !str_starts_with($record->shopify_id, 'local_'))
                         ->action(function (Product $record) {
                             try {
                                 $service = new ProductService(new GraphQLClient());
+                                $store = $record->store;
+                                $payload = $record->payload;
+
+                                // Update basic product info
                                 $service->update($record, [
                                     'title' => $record->title,
                                     'handle' => $record->handle,
                                     'vendor' => $record->vendor,
                                     'productType' => $record->product_type,
                                     'status' => $record->status,
+                                    'descriptionHtml' => $payload['descriptionHtml'] ?? '',
                                 ]);
+
+                                $mediaAdded = 0;
+                                $mediaRemoved = 0;
+
+                                // Remove images marked for deletion
+                                if (!empty($payload['imagesToRemove'])) {
+                                    foreach ($payload['imagesToRemove'] as $imageId) {
+                                        try {
+                                            $service->deleteImage($record, $imageId);
+                                            $mediaRemoved++;
+                                        } catch (\Exception $e) {
+                                            // Log but continue
+                                        }
+                                    }
+                                }
+
+                                // Add new images
+                                if (!empty($payload['pendingMedia'])) {
+                                    $localPaths = [];
+                                    $urlMedia = [];
+
+                                    foreach ($payload['pendingMedia'] as $mediaItem) {
+                                        if (!empty($mediaItem['localPath'])) {
+                                            $localPaths[] = $mediaItem['localPath'];
+                                        } else {
+                                            $urlMedia[] = $mediaItem;
+                                        }
+                                    }
+
+                                    // Upload local files
+                                    if (!empty($localPaths)) {
+                                        $resourceUrls = $service->uploadFilesToShopify($store, $localPaths);
+                                        foreach ($resourceUrls as $url) {
+                                            $urlMedia[] = [
+                                                'originalSource' => $url,
+                                                'alt' => '',
+                                                'mediaContentType' => 'IMAGE',
+                                            ];
+                                        }
+                                    }
+
+                                    // Add media to product
+                                    if (!empty($urlMedia)) {
+                                        $service->addMediaToProduct($record, $urlMedia);
+                                        $mediaAdded = count($urlMedia);
+                                    }
+                                }
+
+                                // Clear pending changes from payload
+                                unset($payload['pendingMedia'], $payload['imagesToRemove']);
+                                $record->update(['payload' => $payload]);
+
+                                // Refresh product from Shopify
+                                $service->fetch($record);
+
+                                $message = 'Product updated on Shopify.';
+                                if ($mediaAdded > 0 || $mediaRemoved > 0) {
+                                    $message .= " Added {$mediaAdded} image(s), removed {$mediaRemoved} image(s).";
+                                }
+
                                 Notification::make()
                                     ->title('Product Updated')
-                                    ->body('Product has been updated on Shopify.')
+                                    ->body($message)
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
@@ -451,6 +627,7 @@ class ProductResource extends Resource
                         ->modalHeading('Delete Product from Shopify')
                         ->modalDescription('This will permanently delete the product from Shopify AND remove the local record. This action cannot be undone.')
                         ->modalSubmitActionLabel('Yes, Delete Permanently')
+                        ->visible(fn (Product $record): bool => !str_starts_with($record->shopify_id, 'local_'))
                         ->action(function (Product $record) {
                             try {
                                 $service = new ProductService(new GraphQLClient());
@@ -467,6 +644,22 @@ class ProductResource extends Resource
                                     ->danger()
                                     ->send();
                             }
+                        }),
+                    Action::make('delete_local')
+                        ->label('Delete Local')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete Local Product')
+                        ->modalDescription('This will delete the local product record. It has not been pushed to Shopify yet.')
+                        ->visible(fn (Product $record): bool => str_starts_with($record->shopify_id, 'local_'))
+                        ->action(function (Product $record) {
+                            $record->delete();
+                            Notification::make()
+                                ->title('Product Deleted')
+                                ->body('Local product has been deleted.')
+                                ->success()
+                                ->send();
                         }),
                 ]),
             ])
@@ -490,6 +683,7 @@ class ProductResource extends Resource
     {
         return [
             'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
             'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];

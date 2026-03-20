@@ -53,6 +53,8 @@ class ProductSyncer implements EntitySyncerInterface
                             'status' => $node['status'] ?? null,
                             'vendor' => $node['vendor'] ?? null,
                             'product_type' => $node['productType'] ?? null,
+                            'images' => $this->extractImages($node),
+                            'featured_image_url' => $node['featuredImage']['url'] ?? null,
                             'payload' => $node,
                             'shopify_updated_at' => $node['updatedAt'] ?? null,
                         ]
@@ -117,7 +119,7 @@ class ProductSyncer implements EntitySyncerInterface
                 status
                 vendor
                 productType
-                description
+                descriptionHtml
                 tags
                 createdAt
                 updatedAt
@@ -125,6 +127,15 @@ class ProductSyncer implements EntitySyncerInterface
                   id
                   url
                   altText
+                }
+                images(first: 10) {
+                  edges {
+                    node {
+                      id
+                      url
+                      altText
+                    }
+                  }
                 }
                 variants(first: 50) {
                   edges {
@@ -152,5 +163,22 @@ class ProductSyncer implements EntitySyncerInterface
           }
         }
         GQL;
+    }
+
+    protected function extractImages(array $node): array
+    {
+        $images = [];
+
+        if (isset($node['images']['edges'])) {
+            foreach ($node['images']['edges'] as $edge) {
+                $images[] = [
+                    'id' => $edge['node']['id'] ?? null,
+                    'url' => $edge['node']['url'] ?? null,
+                    'altText' => $edge['node']['altText'] ?? null,
+                ];
+            }
+        }
+
+        return $images;
     }
 }

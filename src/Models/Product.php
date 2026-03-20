@@ -38,12 +38,15 @@ class Product extends Model
         'status',
         'vendor',
         'product_type',
+        'images',
+        'featured_image_url',
         'payload',
         'shopify_updated_at',
     ];
 
     protected $casts = [
         'payload' => 'array',
+        'images' => 'array',
         'shopify_updated_at' => 'datetime',
     ];
 
@@ -76,7 +79,7 @@ class Product extends Model
      */
     public function getDescriptionAttribute(): ?string
     {
-        return $this->payload['description'] ?? null;
+        return $this->payload['descriptionHtml'] ?? $this->payload['description'] ?? null;
     }
 
     /**
@@ -85,11 +88,48 @@ class Product extends Model
     public function getImagesAttribute(): array
     {
         $images = [];
+
+        // Shopify format (synced products with full images array)
         if (isset($this->payload['images']['edges'])) {
             foreach ($this->payload['images']['edges'] as $edge) {
                 $images[] = $edge['node'];
             }
         }
+
+        // Fallback to featuredImage if no images array (reduced sync query)
+        if (empty($images) && isset($this->payload['featuredImage']['url'])) {
+            $images[] = [
+                'id' => $this->payload['featuredImage']['id'] ?? null,
+                'url' => $this->payload['featuredImage']['url'],
+                'altText' => $this->payload['featuredImage']['altText'] ?? '',
+            ];
+        }
+
+        // Local product format - media array
+        if (isset($this->payload['media']) && is_array($this->payload['media'])) {
+            foreach ($this->payload['media'] as $media) {
+                if (!empty($media['originalSource'])) {
+                    $images[] = [
+                        'url' => $media['originalSource'],
+                        'altText' => $media['alt'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        // Pending media (uploaded but not yet pushed to Shopify)
+        if (isset($this->payload['pendingMedia']) && is_array($this->payload['pendingMedia'])) {
+            foreach ($this->payload['pendingMedia'] as $media) {
+                if (!empty($media['originalSource'])) {
+                    $images[] = [
+                        'url' => $media['originalSource'],
+                        'altText' => $media['alt'] ?? '',
+                        'pending' => true,
+                    ];
+                }
+            }
+        }
+
         return $images;
     }
 }

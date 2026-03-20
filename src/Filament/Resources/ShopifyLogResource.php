@@ -12,10 +12,13 @@ use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\ShopifyLogResource\Pages;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\ShopifyLog;
 
 class ShopifyLogResource extends Resource
 {
+    use HasShopifyPermissions;
+
     protected static ?string $model = ShopifyLog::class;
 
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedClipboardDocumentList;
@@ -29,6 +32,16 @@ class ShopifyLogResource extends Resource
     protected static ?string $modelLabel = 'Activity Log';
 
     protected static ?string $pluralModelLabel = 'Activity Logs';
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'sync.logs';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return static::checkPermission('sync.logs');
+    }
 
     public static function form(Schema $schema): Schema
     {

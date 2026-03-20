@@ -144,13 +144,19 @@ class Store extends Model
 
     /**
      * Get the public-facing URL for this store.
+     * Uses custom_domain if set, otherwise falls back to shop_domain.
      *
      * @return string
      */
     public function getPublicUrl(): string
     {
-        if ($this->custom_domain) {
-            return rtrim($this->custom_domain, '/');
+        if (!empty($this->custom_domain)) {
+            $domain = rtrim($this->custom_domain, '/');
+            // Ensure https:// prefix
+            if (!str_starts_with($domain, 'http://') && !str_starts_with($domain, 'https://')) {
+                $domain = 'https://' . $domain;
+            }
+            return $domain;
         }
 
         return 'https://' . $this->shop_domain;

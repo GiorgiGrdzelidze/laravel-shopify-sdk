@@ -12,11 +12,14 @@ use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\CustomerResource\Pages;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Customer;
 use BackedEnum;
 
 class CustomerResource extends Resource
 {
+    use HasShopifyPermissions;
+
     protected static ?string $model = Customer::class;
 
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedUsers;
@@ -24,6 +27,11 @@ class CustomerResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 4;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'customers';
+    }
 
     public static function form(Schema $schema): Schema
     {

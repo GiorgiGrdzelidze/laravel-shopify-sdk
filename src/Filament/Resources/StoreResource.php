@@ -22,6 +22,7 @@ use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\StoreResource\Pages;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Store;
 use LaravelShopifySdk\Sync\SyncRunner;
 use Illuminate\Support\Facades\Http;
@@ -29,6 +30,8 @@ use BackedEnum;
 
 class StoreResource extends Resource
 {
+    use HasShopifyPermissions;
+
     protected static ?string $model = Store::class;
 
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedBuildingStorefront;
@@ -36,6 +39,11 @@ class StoreResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 1;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'stores';
+    }
 
     public static function form(Schema $schema): Schema
     {

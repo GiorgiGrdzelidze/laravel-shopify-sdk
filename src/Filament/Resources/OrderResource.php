@@ -22,12 +22,15 @@ use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\OrderResource\Pages;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Order;
 use LaravelShopifySdk\Models\Store;
 use BackedEnum;
 
 class OrderResource extends Resource
 {
+    use HasShopifyPermissions;
+
     protected static ?string $model = Order::class;
 
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedShoppingCart;
@@ -35,6 +38,11 @@ class OrderResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 3;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'orders';
+    }
 
     public static function form(Schema $schema): Schema
     {

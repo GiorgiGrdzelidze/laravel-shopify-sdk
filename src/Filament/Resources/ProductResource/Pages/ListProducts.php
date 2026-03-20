@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Filament\Resources\ProductResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use LaravelShopifySdk\Auth\StoreRepository;
@@ -19,6 +20,10 @@ class ListProducts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            CreateAction::make()
+                ->label('Create Product')
+                ->icon('heroicon-o-plus'),
+
             Action::make('syncProducts')
                 ->label('Sync Products')
                 ->icon('heroicon-o-cube')
