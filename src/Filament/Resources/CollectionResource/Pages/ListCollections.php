@@ -28,7 +28,7 @@ class ListCollections extends ListRecords
                 ->modalDescription('This will sync all collections from Shopify. Continue?')
                 ->action(function () {
                     $syncer = app(CollectionSyncer::class);
-                    $stores = \LaravelShopifySdk\Models\Store::where('status', 'active')->get();
+                    $stores = \LaravelShopifySdk\Models\Core\Store::where('status', 'active')->get();
 
                     $totalCollections = 0;
                     foreach ($stores as $store) {

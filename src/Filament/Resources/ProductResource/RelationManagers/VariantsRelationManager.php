@@ -21,7 +21,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use LaravelShopifySdk\Clients\GraphQLClient;
-use LaravelShopifySdk\Models\Variant;
+use LaravelShopifySdk\Models\Core\Variant;
 use LaravelShopifySdk\Services\VariantService;
 
 class VariantsRelationManager extends RelationManager
@@ -45,13 +45,13 @@ class VariantsRelationManager extends RelationManager
                     ->weight('bold')
                     ->description(fn (Variant $record) => $record->sku ? "SKU: {$record->sku}" : null),
                 Tables\Columns\TextColumn::make('price')
-                    ->money(fn ($record) => $record->product?->store?->currency ?? 'USD')
+                    ->formatStateUsing(fn ($state, $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->product?->store?->currency ?? 'USD'))
                     ->sortable()
                     ->weight('semibold')
                     ->color('success'),
                 Tables\Columns\TextColumn::make('compare_at_price')
                     ->label('Compare At')
-                    ->money(fn ($record) => $record->product?->store?->currency ?? 'USD')
+                    ->formatStateUsing(fn ($state, $record) => $state ? \LaravelShopifySdk\Helpers\CurrencyHelper::format($state, $record->product?->store?->currency ?? 'USD') : null)
                     ->sortable()
                     ->color('gray')
                     ->placeholder('—'),
@@ -95,12 +95,27 @@ class VariantsRelationManager extends RelationManager
                     ->label('Sync All from Shopify')
                     ->icon('heroicon-o-arrow-path')
                     ->color('info')
+                    ->requiresConfirmation()
+                    ->modalHeading('Sync Variants')
+                    ->modalDescription('This will sync all variants for this product from Shopify. Continue?')
                     ->action(function () {
-                        Notification::make()
-                            ->title('Sync Started')
-                            ->body('Variant sync will be performed during next product sync.')
-                            ->info()
-                            ->send();
+                        try {
+                            $product = $this->getOwnerRecord();
+                            $service = new \LaravelShopifySdk\Services\ProductService(new GraphQLClient());
+                            $service->fetch($product);
+
+                            Notification::make()
+                                ->title('Variants Synced')
+                                ->body('All variants have been synced from Shopify.')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Sync Failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
                     }),
             ])
             ->recordActions([
@@ -197,6 +212,9 @@ class VariantsRelationManager extends RelationManager
                         ->label('Sync from Shopify')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->color('info')
+                        ->requiresConfirmation()
+                        ->modalHeading('Sync Variant')
+                        ->modalDescription('This will sync this variant from Shopify. Continue?')
                         ->action(function (Variant $record) {
                             try {
                                 $service = new VariantService(new GraphQLClient());
@@ -283,13 +301,13 @@ class VariantsRelationManager extends RelationManager
                     ->schema([
                         TextEntry::make('price')
                             ->label('Price')
-                            ->money(fn (Variant $record) => $record->product?->store?->currency ?? 'USD')
+                            ->formatStateUsing(fn ($state, Variant $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->product?->store?->currency ?? 'USD'))
                             ->size('lg')
                             ->weight('bold')
                             ->color('success'),
                         TextEntry::make('compare_at_price')
                             ->label('Compare At Price')
-                            ->money(fn (Variant $record) => $record->product?->store?->currency ?? 'USD')
+                            ->formatStateUsing(fn ($state, Variant $record) => $state ? \LaravelShopifySdk\Helpers\CurrencyHelper::format($state, $record->product?->store?->currency ?? 'USD') : null)
                             ->placeholder('—'),
                         TextEntry::make('inventory_quantity')
                             ->label('Stock Quantity')

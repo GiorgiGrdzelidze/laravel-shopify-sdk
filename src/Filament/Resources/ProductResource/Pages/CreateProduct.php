@@ -17,7 +17,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use LaravelShopifySdk\Filament\Resources\ProductResource;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 class CreateProduct extends CreateRecord
 {

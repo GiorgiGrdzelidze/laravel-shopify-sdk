@@ -8,7 +8,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\DB;
-use LaravelShopifySdk\Models\Variant;
+use LaravelShopifySdk\Models\Core\Variant;
 
 class InventoryAlertWidget extends BaseWidget
 {

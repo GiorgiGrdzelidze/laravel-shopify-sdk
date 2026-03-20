@@ -6,7 +6,7 @@ namespace LaravelShopifySdk\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 /**
  * Setup Store Command

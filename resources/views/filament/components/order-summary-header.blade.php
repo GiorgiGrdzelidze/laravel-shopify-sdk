@@ -1,6 +1,6 @@
 @php
-    use LaravelShopifySdk\Models\Order;
-    use LaravelShopifySdk\Models\Store;
+    use LaravelShopifySdk\Models\Orders\Order;
+    use LaravelShopifySdk\Models\Core\Store;
     use LaravelShopifySdk\Helpers\CurrencyHelper;
 
     $currency = Store::first()?->currency ?? 'USD';

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Commands;
 
 use Illuminate\Console\Command;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Sync\FulfillmentSyncer;
 
 class SyncFulfillmentsCommand extends Command

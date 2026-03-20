@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\ShopifyClient;
-use LaravelShopifySdk\Models\Store;
-use LaravelShopifySdk\Models\SyncRun;
+use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Sync\SyncRun;
 use Illuminate\Support\Facades\Log;
 
 /**

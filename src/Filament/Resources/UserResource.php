@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\Builder;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\Resources\UserResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Role;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Access\Role;
+use LaravelShopifySdk\Models\Core\Store;
 
 class UserResource extends Resource
 {

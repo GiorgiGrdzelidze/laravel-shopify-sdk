@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Traits;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use LaravelShopifySdk\Models\Permission;
-use LaravelShopifySdk\Models\Role;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Access\Permission;
+use LaravelShopifySdk\Models\Access\Role;
+use LaravelShopifySdk\Models\Core\Store;
 
 trait HasShopifyRoles
 {

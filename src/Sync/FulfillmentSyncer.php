@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\GraphQLClient;
-use LaravelShopifySdk\Models\Fulfillment;
-use LaravelShopifySdk\Models\FulfillmentOrder;
-use LaravelShopifySdk\Models\Store;
-use LaravelShopifySdk\Models\SyncRun;
+use LaravelShopifySdk\Models\Orders\Fulfillment;
+use LaravelShopifySdk\Models\Orders\FulfillmentOrder;
+use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Sync\SyncRun;
 
 class FulfillmentSyncer
 {

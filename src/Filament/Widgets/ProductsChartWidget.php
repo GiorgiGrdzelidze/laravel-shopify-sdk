@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
-use LaravelShopifySdk\Models\Product;
+use LaravelShopifySdk\Models\Core\Product;
 
 class ProductsChartWidget extends ChartWidget
 {

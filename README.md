@@ -42,60 +42,51 @@
 
 ## ✨ Features
 
-<table>
-<tr>
-<td width="50%">
-
 ### 🔐 Authentication
-- OAuth Authorization Code Grant
-- Client Credentials Grant (2026+)
-- Secure token encryption
+- **OAuth Authorization Code Grant** — Standard Shopify OAuth flow for public/custom apps
+- **Client Credentials Grant (2026+)** — Server-to-server auth for modern Shopify apps
+- **Secure Token Encryption** — Encrypted access tokens with automatic refresh
 
 ### ⚡ API Clients
-- GraphQL API (recommended)
-- REST API support
-- Automatic rate limiting
-- Retry with exponential backoff
+- **GraphQL API** — Recommended for optimal performance and flexibility
+- **REST API** — Full support for legacy endpoints
+- **Rate Limiting** — Intelligent throttling respects Shopify limits
+- **Retry Logic** — Exponential backoff for transient failures
 
 ### 🔄 Data Synchronization
-- Products & Variants
-- Orders & Line Items
-- Customers
-- Inventory Levels
-- Collections
-- Discounts & Price Rules
-- Draft Orders
-- Fulfillments
-- Metafields
-
-</td>
-<td width="50%">
+- **Products & Variants** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
+- **Product Types** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
+- **Product Tags** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
+- **Orders & Line Items** — Sync ✅ | Read-only
+- **Customers** — Sync ✅ | Push ✅ | Update ✅
+- **Collections** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
+- **Discounts** — Sync ✅ | Push ✅ | Update ✅
+- **Draft Orders** — Sync ✅ | Push ✅ | Update ✅
+- **Fulfillments** — Sync ✅ | Read-only
+- **Metafields** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
+- **Inventory Levels** — Sync ✅ | Push ✅ | Update ✅
 
 ### 🪝 Webhooks
-- HMAC-SHA256 verification
-- Idempotent processing
-- Event storage & audit
+- **HMAC-SHA256 Verification** — Cryptographic verification of webhook authenticity
+- **Idempotent Processing** — Safe handling of duplicate webhook deliveries
+- **Event Storage** — Full audit trail of all received webhooks
 
 ### 🏪 Store Management
-- Multi-store support
-- Single-store mode
-- Store-level access control
+- **Multi-Store Support** — Manage unlimited Shopify stores from one app
+- **Single-Store Mode** — Simplified setup for single-store applications
+- **Access Control** — Restrict users to specific stores
 
-### 🎛️ Filament v5 Admin
-- 15+ Resources
-- Dashboard widgets
-- Sync action buttons
-- RBAC with roles/permissions
-- Activity logging
+### 🎛️ Filament v5 Admin Panel
+- **17+ Resources** — Full CRUD for all Shopify entities
+- **Dashboard Widgets** — Real-time stats, top products, inventory alerts
+- **Sync Actions** — One-click sync buttons with confirmation dialogs
+- **RBAC** — 7 roles, 55+ permissions out of the box
+- **Activity Logging** — Complete audit trail of all actions
 
 ### 🛡️ Enterprise Ready
-- PHP 8.3 strict types
-- Comprehensive tests
-- Full PHPDoc coverage
-
-</td>
-</tr>
-</table>
+- **PHP 8.3 Strict Types** — Full type safety across entire codebase
+- **Comprehensive Tests** — PHPUnit/Pest test suite included
+- **PHPDoc Coverage** — Complete documentation for IDE support
 
 ---
 
@@ -1058,6 +1049,39 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 ---
 
 ## 📝 Changelog
+
+### 1.4.0 (2026-03-20)
+
+**New Features** 🚀
+
+- ✅ **Product Types CRUD** - Manage product types with Shopify sync
+- ✅ **Product Tags CRUD** - Manage product tags with Shopify sync
+- ✅ **Assign to Products** - Select products and assign types/tags directly to Shopify
+- ✅ **Rename on Shopify** - Rename types/tags across all products with one click
+- ✅ **Sync from Products** - Extract unique types/tags from existing products
+- ✅ **Sync Confirmation Dialogs** - All sync actions now require confirmation
+- ✅ **Immediate Variant Sync** - Variant sync now executes immediately
+- ✅ **Model Organization** - Models organized into Core, Commerce, Marketing subdirectories
+
+**New Filament Resources:**
+- ProductTypeResource - Manage product types with assign/rename actions
+- ProductTagResource - Manage product tags with assign/rename actions
+
+**New Models:**
+- ProductType - Store-aware product type management
+- ProductTag - Store-aware product tag management
+
+**New Services:**
+- ProductTypeService - Push types to Shopify, assign to products
+- ProductTagService - Push tags to Shopify, assign to products
+
+**Improvements:**
+- All sync actions now show confirmation dialogs
+- Variant sync executes immediately instead of waiting for product sync
+- Fixed Store type hints in VariantService
+- Auto-fill store_id when only one store exists
+
+---
 
 ### 1.3.0 (2026-03-20)
 

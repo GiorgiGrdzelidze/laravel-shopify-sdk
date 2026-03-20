@@ -23,8 +23,8 @@ use Illuminate\Support\Str;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\Resources\RoleResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Permission;
-use LaravelShopifySdk\Models\Role;
+use LaravelShopifySdk\Models\Access\Permission;
+use LaravelShopifySdk\Models\Access\Role;
 
 class RoleResource extends Resource
 {

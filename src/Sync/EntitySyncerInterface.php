@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaravelShopifySdk\Sync;
 
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 /**
  * Entity Syncer Interface

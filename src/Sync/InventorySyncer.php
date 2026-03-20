@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\ShopifyClient;
-use LaravelShopifySdk\Models\InventoryLevel;
-use LaravelShopifySdk\Models\Location;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Inventory\InventoryLevel;
+use LaravelShopifySdk\Models\Core\Location;
+use LaravelShopifySdk\Models\Core\Store;
 
 /**
  * Inventory Syncer

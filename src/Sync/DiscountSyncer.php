@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\GraphQLClient;
-use LaravelShopifySdk\Models\Discount;
-use LaravelShopifySdk\Models\DiscountCode;
-use LaravelShopifySdk\Models\Store;
-use LaravelShopifySdk\Models\SyncRun;
+use LaravelShopifySdk\Models\Marketing\Discount;
+use LaravelShopifySdk\Models\Marketing\DiscountCode;
+use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Sync\SyncRun;
 
 class DiscountSyncer
 {

@@ -6,8 +6,8 @@ namespace LaravelShopifySdk\Services;
 
 use LaravelShopifySdk\Clients\GraphQLClient;
 use LaravelShopifySdk\Exceptions\ShopifyApiException;
-use LaravelShopifySdk\Models\Product;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Product;
+use LaravelShopifySdk\Models\Core\Store;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -323,7 +323,7 @@ class ProductService
             $variants = $shopifyProduct['variants']['edges'] ?? [];
             foreach ($variants as $edge) {
                 $variantData = $edge['node'];
-                \LaravelShopifySdk\Models\Variant::create([
+                \LaravelShopifySdk\Models\Core\Variant::create([
                     'store_id' => $store->id,
                     'product_id' => $product->id,
                     'shopify_id' => $variantData['id'],
@@ -444,7 +444,7 @@ class ProductService
 
         // Create local variant records
         foreach ($createdVariants as $variantData) {
-            \LaravelShopifySdk\Models\Variant::create([
+            \LaravelShopifySdk\Models\Core\Variant::create([
                 'store_id' => $store->id,
                 'product_id' => $product->id,
                 'shopify_id' => $variantData['id'],
@@ -472,7 +472,7 @@ class ProductService
      */
     protected function getDefaultLocationId(Store $store): ?string
     {
-        $location = \LaravelShopifySdk\Models\Location::where('store_id', $store->id)->first();
+        $location = \LaravelShopifySdk\Models\Core\Location::where('store_id', $store->id)->first();
         return $location?->shopify_id;
     }
 

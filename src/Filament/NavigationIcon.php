@@ -12,4 +12,6 @@ enum NavigationIcon: string
     case OutlinedUsers = 'heroicon-o-users';
     case OutlinedChartBar = 'heroicon-o-chart-bar';
     case OutlinedClipboardDocumentList = 'heroicon-o-clipboard-document-list';
+    case OutlinedTag = 'heroicon-o-tag';
+    case OutlinedHashtag = 'heroicon-o-hashtag';
 }

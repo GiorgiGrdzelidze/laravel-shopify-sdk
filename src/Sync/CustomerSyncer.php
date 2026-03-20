@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\ShopifyClient;
-use LaravelShopifySdk\Models\Customer;
-use LaravelShopifySdk\Models\ShopifyLog;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Customer;
+use LaravelShopifySdk\Models\Sync\ShopifyLog;
+use LaravelShopifySdk\Models\Core\Store;
 
 /**
  * Customer Syncer

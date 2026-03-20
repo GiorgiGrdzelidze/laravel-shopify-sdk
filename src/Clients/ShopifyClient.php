@@ -6,7 +6,7 @@ namespace LaravelShopifySdk\Clients;
 
 use LaravelShopifySdk\Auth\StoreRepository;
 use LaravelShopifySdk\Exceptions\ShopifyApiException;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 /**
  * Shopify Client

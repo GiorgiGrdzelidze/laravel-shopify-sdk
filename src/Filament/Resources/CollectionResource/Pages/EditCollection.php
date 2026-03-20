@@ -9,7 +9,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 use LaravelShopifySdk\Filament\Resources\CollectionResource;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 class EditCollection extends EditRecord
 {

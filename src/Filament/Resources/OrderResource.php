@@ -23,8 +23,8 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\OrderResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Order;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Orders\Order;
+use LaravelShopifySdk\Models\Core\Store;
 use BackedEnum;
 
 class OrderResource extends Resource
@@ -93,7 +93,7 @@ class OrderResource extends Resource
                         TextInput::make('total_price')
                             ->label('Total Price')
                             ->numeric()
-                            ->prefix('$')
+                            ->prefix(fn ($record) => $record?->store?->currency ?? $record?->currency ?? 'USD')
                             ->columnSpan(['default' => 'full', 'md' => 1]),
                         TextInput::make('currency')
                             ->maxLength(10)
@@ -181,7 +181,7 @@ class OrderResource extends Resource
                     ->icon('heroicon-m-envelope')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('total_price')
-                    ->money(fn (Order $record) => $record->store?->currency ?? $record->currency ?? 'USD')
+                    ->formatStateUsing(fn ($state, Order $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->store?->currency ?? $record->currency ?? 'USD'))
                     ->sortable()
                     ->weight('semibold'),
                 Tables\Columns\TextColumn::make('financial_status')

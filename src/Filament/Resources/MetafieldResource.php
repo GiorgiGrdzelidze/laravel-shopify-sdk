@@ -18,9 +18,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
-use LaravelShopifySdk\Models\Metafield;
-use LaravelShopifySdk\Models\MetafieldDefinition;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Marketing\Metafield;
+use LaravelShopifySdk\Models\Marketing\MetafieldDefinition;
+use LaravelShopifySdk\Models\Core\Store;
 
 class MetafieldResource extends Resource
 {

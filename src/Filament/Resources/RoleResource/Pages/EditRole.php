@@ -7,7 +7,7 @@ namespace LaravelShopifySdk\Filament\Resources\RoleResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use LaravelShopifySdk\Filament\Resources\RoleResource;
-use LaravelShopifySdk\Models\Permission;
+use LaravelShopifySdk\Models\Access\Permission;
 
 class EditRole extends EditRecord
 {

@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\Resources\PermissionResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Permission;
+use LaravelShopifySdk\Models\Access\Permission;
 
 class PermissionResource extends Resource
 {

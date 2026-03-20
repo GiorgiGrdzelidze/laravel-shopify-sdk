@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Debug;
 
 use LaravelShopifySdk\Clients\ShopifyClient;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 class TestOrderRest
 {

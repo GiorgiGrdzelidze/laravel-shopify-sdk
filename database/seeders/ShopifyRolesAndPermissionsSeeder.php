@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use LaravelShopifySdk\Models\Permission;
-use LaravelShopifySdk\Models\Role;
+use LaravelShopifySdk\Models\Access\Permission;
+use LaravelShopifySdk\Models\Access\Role;
 
 class ShopifyRolesAndPermissionsSeeder extends Seeder
 {

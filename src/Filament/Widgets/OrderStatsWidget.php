@@ -8,8 +8,8 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
 use LaravelShopifySdk\Helpers\CurrencyHelper;
-use LaravelShopifySdk\Models\Order;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Orders\Order;
+use LaravelShopifySdk\Models\Core\Store;
 
 class OrderStatsWidget extends BaseWidget
 {

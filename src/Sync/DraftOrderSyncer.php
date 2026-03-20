@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\GraphQLClient;
-use LaravelShopifySdk\Models\DraftOrder;
-use LaravelShopifySdk\Models\Store;
-use LaravelShopifySdk\Models\SyncRun;
+use LaravelShopifySdk\Models\Orders\DraftOrder;
+use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Sync\SyncRun;
 
 class DraftOrderSyncer
 {

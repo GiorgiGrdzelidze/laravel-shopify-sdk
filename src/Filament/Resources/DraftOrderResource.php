@@ -18,9 +18,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
-use LaravelShopifySdk\Models\Customer;
-use LaravelShopifySdk\Models\DraftOrder;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Customer;
+use LaravelShopifySdk\Models\Orders\DraftOrder;
+use LaravelShopifySdk\Models\Core\Store;
 
 class DraftOrderResource extends Resource
 {
@@ -133,7 +133,7 @@ class DraftOrderResource extends Resource
 
                 TextColumn::make('total_price')
                     ->label('Total')
-                    ->money(fn ($record) => $record->currency)
+                    ->formatStateUsing(fn ($state, $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->currency ?? 'USD'))
                     ->sortable(),
 
                 TextColumn::make('created_at')

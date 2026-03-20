@@ -8,7 +8,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use LaravelShopifySdk\Filament\Resources\FulfillmentResource;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Sync\FulfillmentSyncer;
 
 class ListFulfillments extends ListRecords

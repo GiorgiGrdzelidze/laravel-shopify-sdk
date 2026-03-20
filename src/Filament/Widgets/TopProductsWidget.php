@@ -7,8 +7,8 @@ namespace LaravelShopifySdk\Filament\Widgets;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 use LaravelShopifySdk\Helpers\CurrencyHelper;
-use LaravelShopifySdk\Models\OrderLine;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Orders\OrderLine;
+use LaravelShopifySdk\Models\Core\Store;
 
 class TopProductsWidget extends Widget
 {

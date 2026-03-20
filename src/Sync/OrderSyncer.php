@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\ShopifyClient;
-use LaravelShopifySdk\Models\Order;
-use LaravelShopifySdk\Models\OrderLine;
-use LaravelShopifySdk\Models\ShopifyLog;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Orders\Order;
+use LaravelShopifySdk\Models\Orders\OrderLine;
+use LaravelShopifySdk\Models\Sync\ShopifyLog;
+use LaravelShopifySdk\Models\Core\Store;
 
 /**
  * Order Syncer
@@ -76,14 +76,14 @@ class OrderSyncer implements EntitySyncerInterface
 
                             // Try matching by Shopify variant ID first
                             if (isset($lineNode['variant']['id'])) {
-                                $variant = \LaravelShopifySdk\Models\Variant::where('store_id', $store->id)
+                                $variant = \LaravelShopifySdk\Models\Core\Variant::where('store_id', $store->id)
                                     ->where('shopify_id', $lineNode['variant']['id'])
                                     ->first();
                             }
 
                             // If no match by Shopify ID, try matching by SKU
                             if (!$variant && !empty($lineNode['sku'])) {
-                                $variant = \LaravelShopifySdk\Models\Variant::where('store_id', $store->id)
+                                $variant = \LaravelShopifySdk\Models\Core\Variant::where('store_id', $store->id)
                                     ->where('sku', $lineNode['sku'])
                                     ->first();
                             }
@@ -96,7 +96,7 @@ class OrderSyncer implements EntitySyncerInterface
 
                             // Fallback: try matching product by Shopify ID if variant not found
                             if (!$localProductId && isset($lineNode['product']['id'])) {
-                                $product = \LaravelShopifySdk\Models\Product::where('store_id', $store->id)
+                                $product = \LaravelShopifySdk\Models\Core\Product::where('store_id', $store->id)
                                     ->where('shopify_id', $lineNode['product']['id'])
                                     ->first();
                                 $localProductId = $product?->id;

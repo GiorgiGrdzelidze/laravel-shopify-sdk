@@ -9,7 +9,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use LaravelShopifySdk\Clients\GraphQLClient;
 use LaravelShopifySdk\Filament\Resources\DiscountResource;
-use LaravelShopifySdk\Models\ShopifyLog;
+use LaravelShopifySdk\Models\Sync\ShopifyLog;
 
 class EditDiscount extends EditRecord
 {

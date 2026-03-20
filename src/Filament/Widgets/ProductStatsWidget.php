@@ -7,8 +7,8 @@ namespace LaravelShopifySdk\Filament\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
-use LaravelShopifySdk\Models\Product;
-use LaravelShopifySdk\Models\Variant;
+use LaravelShopifySdk\Models\Core\Product;
+use LaravelShopifySdk\Models\Core\Variant;
 
 class ProductStatsWidget extends BaseWidget
 {

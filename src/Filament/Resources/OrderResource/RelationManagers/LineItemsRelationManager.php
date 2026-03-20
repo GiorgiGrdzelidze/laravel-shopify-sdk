@@ -7,7 +7,7 @@ namespace LaravelShopifySdk\Filament\Resources\OrderResource\RelationManagers;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use LaravelShopifySdk\Models\OrderLine;
+use LaravelShopifySdk\Models\Orders\OrderLine;
 
 class LineItemsRelationManager extends RelationManager
 {
@@ -34,12 +34,12 @@ class LineItemsRelationManager extends RelationManager
                     ->weight('bold'),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Unit Price')
-                    ->money(fn (OrderLine $record) => $record->order?->store?->currency ?? $record->order?->currency ?? 'USD')
+                    ->formatStateUsing(fn ($state, OrderLine $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->order?->store?->currency ?? $record->order?->currency ?? 'USD'))
                     ->alignEnd(),
                 Tables\Columns\TextColumn::make('total')
                     ->label('Total')
-                    ->money(fn (OrderLine $record) => $record->order?->store?->currency ?? $record->order?->currency ?? 'USD')
                     ->getStateUsing(fn (OrderLine $record) => $record->price * $record->quantity)
+                    ->formatStateUsing(fn ($state, OrderLine $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->order?->store?->currency ?? $record->order?->currency ?? 'USD'))
                     ->weight('semibold')
                     ->alignEnd(),
             ])

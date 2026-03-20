@@ -14,7 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use LaravelShopifySdk\Clients\GraphQLClient;
-use LaravelShopifySdk\Models\Location;
+use LaravelShopifySdk\Models\Core\Location;
 use LaravelShopifySdk\Services\VariantService;
 
 class LocationsRelationManager extends RelationManager
@@ -87,6 +87,10 @@ class LocationsRelationManager extends RelationManager
                     ->label('Sync Locations')
                     ->icon('heroicon-o-arrow-path')
                     ->color('info')
+                    ->requiresConfirmation()
+                    ->modalHeading('Sync Locations')
+                    ->modalDescription('This will sync all locations from Shopify. Continue?')
+                    ->modalSubmitActionLabel('Sync')
                     ->action(function () {
                         try {
                             $store = $this->getOwnerRecord();

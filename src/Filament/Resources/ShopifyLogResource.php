@@ -13,7 +13,7 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\ShopifyLogResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\ShopifyLog;
+use LaravelShopifySdk\Models\Sync\ShopifyLog;
 
 class ShopifyLogResource extends Resource
 {

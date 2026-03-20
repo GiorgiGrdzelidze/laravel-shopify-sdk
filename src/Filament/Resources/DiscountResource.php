@@ -19,8 +19,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
-use LaravelShopifySdk\Models\Discount;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Marketing\Discount;
+use LaravelShopifySdk\Models\Core\Store;
 
 class DiscountResource extends Resource
 {

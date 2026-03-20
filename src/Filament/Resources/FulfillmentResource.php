@@ -11,8 +11,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
-use LaravelShopifySdk\Models\Fulfillment;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Orders\Fulfillment;
+use LaravelShopifySdk\Models\Core\Store;
 
 class FulfillmentResource extends Resource
 {

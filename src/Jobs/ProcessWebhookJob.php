@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Jobs;
 
 use LaravelShopifySdk\Auth\StoreRepository;
-use LaravelShopifySdk\Models\WebhookEvent;
+use LaravelShopifySdk\Models\Sync\WebhookEvent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

@@ -12,7 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use LaravelShopifySdk\Models\Product;
+use LaravelShopifySdk\Models\Core\Product;
 
 class ProductsRelationManager extends RelationManager
 {

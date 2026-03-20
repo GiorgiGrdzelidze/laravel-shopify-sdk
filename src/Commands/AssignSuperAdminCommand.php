@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Commands;
 
 use Illuminate\Console\Command;
-use LaravelShopifySdk\Models\Role;
+use LaravelShopifySdk\Models\Access\Role;
 
 class AssignSuperAdminCommand extends Command
 {

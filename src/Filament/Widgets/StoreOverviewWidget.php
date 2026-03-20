@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\Model;
 use LaravelShopifySdk\Helpers\CurrencyHelper;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 class StoreOverviewWidget extends BaseWidget
 {
@@ -30,7 +30,7 @@ class StoreOverviewWidget extends BaseWidget
 
         $totalProducts = $store->products()->count();
         $activeProducts = $store->products()->where('status', 'ACTIVE')->count();
-        $totalVariants = \LaravelShopifySdk\Models\Variant::where('store_id', $store->id)->count();
+        $totalVariants = \LaravelShopifySdk\Models\Core\Variant::where('store_id', $store->id)->count();
         $totalOrders = $store->orders()->count();
         $totalRevenue = $store->orders()->sum('total_price');
         $totalCustomers = $store->customers()->count();

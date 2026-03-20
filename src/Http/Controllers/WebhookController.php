@@ -7,7 +7,7 @@ namespace LaravelShopifySdk\Http\Controllers;
 use LaravelShopifySdk\Auth\StoreRepository;
 use LaravelShopifySdk\Exceptions\WebhookException;
 use LaravelShopifySdk\Jobs\ProcessWebhookJob;
-use LaravelShopifySdk\Models\WebhookEvent;
+use LaravelShopifySdk\Models\Sync\WebhookEvent;
 use LaravelShopifySdk\Webhooks\WebhookVerifier;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;

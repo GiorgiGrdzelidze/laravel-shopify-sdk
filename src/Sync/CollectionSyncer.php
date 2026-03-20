@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\GraphQLClient;
-use LaravelShopifySdk\Models\Collection;
-use LaravelShopifySdk\Models\Product;
-use LaravelShopifySdk\Models\Store;
-use LaravelShopifySdk\Models\SyncRun;
+use LaravelShopifySdk\Models\Core\Collection;
+use LaravelShopifySdk\Models\Core\Product;
+use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Sync\SyncRun;
 
 class CollectionSyncer
 {

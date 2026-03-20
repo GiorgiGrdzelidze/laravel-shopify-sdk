@@ -13,7 +13,7 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\CustomerResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Customer;
+use LaravelShopifySdk\Models\Core\Customer;
 use BackedEnum;
 
 class CustomerResource extends Resource
@@ -81,7 +81,7 @@ class CustomerResource extends Resource
                     ->color('info')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total_spent')
-                    ->money(fn ($record) => $record->store?->currency ?? 'USD')
+                    ->formatStateUsing(fn ($state, $record) => \LaravelShopifySdk\Helpers\CurrencyHelper::format($state ?? 0, $record->store?->currency ?? 'USD'))
                     ->weight('semibold')
                     ->color('success')
                     ->sortable(),

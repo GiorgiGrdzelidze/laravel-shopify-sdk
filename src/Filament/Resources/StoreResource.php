@@ -23,7 +23,7 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\StoreResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Sync\SyncRunner;
 use Illuminate\Support\Facades\Http;
 use BackedEnum;
@@ -304,6 +304,9 @@ class StoreResource extends Resource
                     Action::make('sync_products')
                         ->label('Sync Products')
                         ->icon('heroicon-o-cube')
+                        ->requiresConfirmation()
+                        ->modalHeading('Sync Products')
+                        ->modalDescription('This will sync all products from Shopify. Continue?')
                         ->action(function (Store $record) {
                             try {
                                 $runner = app(SyncRunner::class);
@@ -325,6 +328,9 @@ class StoreResource extends Resource
                     Action::make('sync_orders')
                         ->label('Sync Orders')
                         ->icon('heroicon-o-shopping-cart')
+                        ->requiresConfirmation()
+                        ->modalHeading('Sync Orders')
+                        ->modalDescription('This will sync all orders from Shopify. Continue?')
                         ->action(function (Store $record) {
                             try {
                                 $runner = app(SyncRunner::class);
@@ -346,6 +352,9 @@ class StoreResource extends Resource
                     Action::make('sync_customers')
                         ->label('Sync Customers')
                         ->icon('heroicon-o-users')
+                        ->requiresConfirmation()
+                        ->modalHeading('Sync Customers')
+                        ->modalDescription('This will sync all customers from Shopify. Continue?')
                         ->action(function (Store $record) {
                             try {
                                 $runner = app(SyncRunner::class);

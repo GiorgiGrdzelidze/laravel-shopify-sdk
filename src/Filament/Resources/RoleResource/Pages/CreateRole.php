@@ -6,7 +6,7 @@ namespace LaravelShopifySdk\Filament\Resources\RoleResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use LaravelShopifySdk\Filament\Resources\RoleResource;
-use LaravelShopifySdk\Models\Permission;
+use LaravelShopifySdk\Models\Access\Permission;
 
 class CreateRole extends CreateRecord
 {

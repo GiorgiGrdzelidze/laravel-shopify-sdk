@@ -7,8 +7,8 @@ namespace LaravelShopifySdk\Filament\Resources\UserResource\Pages;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Hash;
 use LaravelShopifySdk\Filament\Resources\UserResource;
-use LaravelShopifySdk\Models\Role;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Access\Role;
+use LaravelShopifySdk\Models\Core\Store;
 
 class CreateUser extends CreateRecord
 {

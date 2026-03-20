@@ -6,7 +6,7 @@ namespace LaravelShopifySdk\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
-use LaravelShopifySdk\Models\Order;
+use LaravelShopifySdk\Models\Orders\Order;
 
 class OrdersChartWidget extends ChartWidget
 {

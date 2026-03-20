@@ -25,9 +25,9 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\CollectionResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
-use LaravelShopifySdk\Models\Collection;
-use LaravelShopifySdk\Models\Product;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Collection;
+use LaravelShopifySdk\Models\Core\Product;
+use LaravelShopifySdk\Models\Core\Store;
 
 class CollectionResource extends Resource
 {

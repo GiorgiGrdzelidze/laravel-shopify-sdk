@@ -24,7 +24,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use LaravelShopifySdk\Clients\GraphQLClient;
 use LaravelShopifySdk\Filament\Resources\ProductResource;
-use LaravelShopifySdk\Models\Product;
+use LaravelShopifySdk\Models\Core\Product;
 use LaravelShopifySdk\Services\ProductService;
 
 class EditProduct extends EditRecord

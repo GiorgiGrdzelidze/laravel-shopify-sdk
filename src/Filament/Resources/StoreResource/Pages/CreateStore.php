@@ -6,7 +6,7 @@ namespace LaravelShopifySdk\Filament\Resources\StoreResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use LaravelShopifySdk\Filament\Resources\StoreResource;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 
 class CreateStore extends CreateRecord
 {

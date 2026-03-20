@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Clients;
 
 use LaravelShopifySdk\Exceptions\ShopifyApiException;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 

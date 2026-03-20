@@ -6,8 +6,8 @@ namespace LaravelShopifySdk\Services;
 
 use LaravelShopifySdk\Clients\GraphQLClient;
 use LaravelShopifySdk\Exceptions\ShopifyApiException;
-use LaravelShopifySdk\Models\ShopifyLog;
-use LaravelShopifySdk\Models\Variant;
+use LaravelShopifySdk\Models\Sync\ShopifyLog;
+use LaravelShopifySdk\Models\Core\Variant;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -405,7 +405,7 @@ class VariantService
      * @return array
      * @throws ShopifyApiException
      */
-    public function getLocations(\LaravelShopifySdk\Models\Store $store, bool $syncToDatabase = false): array
+    public function getLocations(\LaravelShopifySdk\Models\Core\Store $store, bool $syncToDatabase = false): array
     {
         $query = <<<'GQL'
         query {
@@ -474,7 +474,7 @@ class VariantService
 
             // Sync to local database if requested
             if ($syncToDatabase) {
-                \LaravelShopifySdk\Models\Location::updateOrCreate(
+                \LaravelShopifySdk\Models\Core\Location::updateOrCreate(
                     [
                         'store_id' => $store->id,
                         'shopify_id' => $node['id'],
@@ -498,7 +498,7 @@ class VariantService
      * @return int Number of locations synced
      * @throws ShopifyApiException
      */
-    public function syncLocations(\LaravelShopifySdk\Models\Store $store): int
+    public function syncLocations(\LaravelShopifySdk\Models\Core\Store $store): int
     {
         $locations = $this->getLocations($store, true);
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaravelShopifySdk\Auth;
 
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use Illuminate\Support\Collection;
 
 /**
