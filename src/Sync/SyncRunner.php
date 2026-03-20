@@ -76,6 +76,71 @@ class SyncRunner
     }
 
     /**
+     * Sync collections for a store.
+     *
+     * @param Store $store
+     * @param array<string, mixed> $options
+     * @return SyncRun
+     */
+    public function syncCollections(Store $store, array $options = []): SyncRun
+    {
+        $syncer = app(CollectionSyncer::class);
+        return $syncer->sync($store, $options);
+    }
+
+    /**
+     * Sync discounts for a store.
+     *
+     * @param Store $store
+     * @param array<string, mixed> $options
+     * @return SyncRun
+     */
+    public function syncDiscounts(Store $store, array $options = []): SyncRun
+    {
+        $syncer = app(DiscountSyncer::class);
+        return $syncer->sync($store, $options);
+    }
+
+    /**
+     * Sync draft orders for a store.
+     *
+     * @param Store $store
+     * @param array<string, mixed> $options
+     * @return SyncRun
+     */
+    public function syncDraftOrders(Store $store, array $options = []): SyncRun
+    {
+        $syncer = app(DraftOrderSyncer::class);
+        return $syncer->sync($store, $options);
+    }
+
+    /**
+     * Sync fulfillments for a store.
+     *
+     * @param Store $store
+     * @param array<string, mixed> $options
+     * @return SyncRun
+     */
+    public function syncFulfillments(Store $store, array $options = []): SyncRun
+    {
+        $syncer = app(FulfillmentSyncer::class);
+        return $syncer->sync($store, $options);
+    }
+
+    /**
+     * Sync metafields for a store.
+     *
+     * @param Store $store
+     * @param array<string, mixed> $options
+     * @return SyncRun
+     */
+    public function syncMetafields(Store $store, array $options = []): SyncRun
+    {
+        $syncer = app(MetafieldSyncer::class);
+        return $syncer->sync($store, $options);
+    }
+
+    /**
      * Run sync with a specific syncer.
      *
      * @param Store $store

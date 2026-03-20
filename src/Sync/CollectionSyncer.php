@@ -21,7 +21,6 @@ class CollectionSyncer
         $syncRun = SyncRun::create([
             'store_id' => $store->id,
             'entity' => 'collections',
-            'status' => 'running',
             'started_at' => now(),
         ]);
 
@@ -56,7 +55,6 @@ class CollectionSyncer
             }
 
             $syncRun->update([
-                'status' => 'completed',
                 'finished_at' => now(),
                 'duration_ms' => (int) ((microtime(true) - $startTime) * 1000),
                 'counts' => $counts,
@@ -64,7 +62,6 @@ class CollectionSyncer
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
             $syncRun->update([
-                'status' => 'failed',
                 'finished_at' => now(),
                 'duration_ms' => (int) ((microtime(true) - $startTime) * 1000),
                 'counts' => $counts,

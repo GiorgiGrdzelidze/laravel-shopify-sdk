@@ -47,15 +47,17 @@ class GraphQLClient
             $attempt++;
 
             try {
+                $payload = ['query' => $query];
+                if (!empty($variables)) {
+                    $payload['variables'] = $variables;
+                }
+
                 $response = Http::withHeaders([
                     'X-Shopify-Access-Token' => $store->access_token,
                     'Content-Type' => 'application/json',
                 ])
                     ->timeout(config('shopify.client.timeout', 30))
-                    ->post($url, [
-                        'query' => $query,
-                        'variables' => $variables,
-                    ]);
+                    ->post($url, $payload);
 
                 if ($response->status() === 429) {
                     $this->handleRateLimit($store->shop_domain, $response, $attempt, $maxAttempts);

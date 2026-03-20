@@ -80,6 +80,26 @@ class SyncAllCommand extends Command
                 $inventoryRun = $runner->syncInventory($store, ['since' => $since]);
                 $this->info("    ✓ {$inventoryRun->counts['locations']} locations, {$inventoryRun->counts['inventory_levels']} inventory levels ({$inventoryRun->duration_ms}ms)");
 
+                $this->line('  Syncing collections...');
+                $collectionRun = $runner->syncCollections($store);
+                $this->info("    ✓ {$collectionRun->counts['total']} collections ({$collectionRun->duration_ms}ms)");
+
+                $this->line('  Syncing discounts...');
+                $discountRun = $runner->syncDiscounts($store);
+                $this->info("    ✓ {$discountRun->counts['total']} discounts, {$discountRun->counts['codes']} codes ({$discountRun->duration_ms}ms)");
+
+                $this->line('  Syncing draft orders...');
+                $draftOrderRun = $runner->syncDraftOrders($store);
+                $this->info("    ✓ {$draftOrderRun->counts['total']} draft orders ({$draftOrderRun->duration_ms}ms)");
+
+                $this->line('  Syncing fulfillments...');
+                $fulfillmentRun = $runner->syncFulfillments($store);
+                $this->info("    ✓ {$fulfillmentRun->counts['total']} fulfillments ({$fulfillmentRun->duration_ms}ms)");
+
+                $this->line('  Syncing metafields...');
+                $metafieldRun = $runner->syncMetafields($store);
+                $this->info("    ✓ {$metafieldRun->counts['total']} metafields ({$metafieldRun->duration_ms}ms)");
+
                 $this->newLine();
                 $this->info("✓ Completed sync for {$store->shop_domain}");
             } catch (\Exception $e) {

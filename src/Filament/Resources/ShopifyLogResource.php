@@ -23,7 +23,7 @@ class ShopifyLogResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedClipboardDocumentList;
 
-    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Reports;
 
     protected static ?int $navigationSort = 9;
 
@@ -120,6 +120,11 @@ class ShopifyLogResource extends Resource
                         'Store' => 'Store',
                         'Location' => 'Location',
                         'InventoryLevel' => 'Inventory Level',
+                        'Collection' => 'Collection',
+                        'Discount' => 'Discount',
+                        'DraftOrder' => 'Draft Order',
+                        'Fulfillment' => 'Fulfillment',
+                        'Metafield' => 'Metafield',
                     ])
                     ->multiple(),
                 Tables\Filters\SelectFilter::make('status')

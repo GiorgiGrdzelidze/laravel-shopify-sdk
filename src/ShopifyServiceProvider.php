@@ -18,6 +18,10 @@ use LaravelShopifySdk\Commands\SyncOrdersCommand;
 use LaravelShopifySdk\Commands\SyncProductsCommand;
 use LaravelShopifySdk\Commands\SyncStoresCommand;
 use LaravelShopifySdk\Commands\SyncCollectionsCommand;
+use LaravelShopifySdk\Commands\SyncDiscountsCommand;
+use LaravelShopifySdk\Commands\SyncDraftOrdersCommand;
+use LaravelShopifySdk\Commands\SyncFulfillmentsCommand;
+use LaravelShopifySdk\Commands\SyncMetafieldsCommand;
 use LaravelShopifySdk\Commands\AssignSuperAdminCommand;
 use LaravelShopifySdk\Sync\SyncRunner;
 use LaravelShopifySdk\Webhooks\WebhookVerifier;
@@ -241,6 +245,10 @@ class ShopifyServiceProvider extends ServiceProvider
                 SyncCustomersCommand::class,
                 SyncInventoryCommand::class,
                 SyncCollectionsCommand::class,
+                SyncDiscountsCommand::class,
+                SyncDraftOrdersCommand::class,
+                SyncFulfillmentsCommand::class,
+                SyncMetafieldsCommand::class,
                 SyncAllCommand::class,
                 AssignSuperAdminCommand::class,
             ]);

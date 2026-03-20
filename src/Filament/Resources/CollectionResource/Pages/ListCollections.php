@@ -22,7 +22,7 @@ class ListCollections extends ListRecords
             Actions\Action::make('sync_collections')
                 ->label('Sync Collections')
                 ->icon('heroicon-o-arrow-path')
-                ->color('gray')
+                ->color('warning')
                 ->requiresConfirmation()
                 ->modalHeading('Sync Collections')
                 ->modalDescription('This will sync all collections from Shopify. Continue?')

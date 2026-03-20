@@ -1,16 +1,29 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+
 # 🛍️ Laravel Shopify SDK
 
-**Production-grade Laravel 12 package for Shopify Admin API integration**
+### Production-Grade Shopify Integration for Laravel 12
 
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
-[![Laravel Version](https://img.shields.io/badge/Laravel-12.0%2B-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
-[![Filament](https://img.shields.io/badge/Filament-v5-FDAE4B?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJMMiA3bDEwIDUgMTAtNS0xMC01ek0yIDE3bDEwIDUgMTAtNS0xMC01LTEwIDV6Ii8+PC9zdmc+)](https://filamentphp.com)
-[![License](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-Passing-22C55E?style=flat-square)](tests/)
+<p align="center">
+  <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.3%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.3+"></a>
+  <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12"></a>
+  <a href="https://filamentphp.com"><img src="https://img.shields.io/badge/Filament-v5-FDAE4B?style=for-the-badge" alt="Filament v5"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="MIT License"></a>
+</p>
 
-*OAuth • Webhooks • GraphQL & REST • Data Mirroring • Multi-Store • Filament v5*
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-filament-v5-integration">Filament</a> •
+  <a href="#-changelog">Changelog</a>
+</p>
+
+---
+
+**🔐 OAuth** · **🪝 Webhooks** · **⚡ GraphQL & REST** · **🔄 Data Sync** · **🏪 Multi-Store** · **🎛️ Filament v5**
 
 </div>
 
@@ -22,25 +35,67 @@
 |----------|-------|
 | **Composer Name** | `giorgigrdzelidze/laravel-shopify-sdk` |
 | **PHP Namespace** | `LaravelShopifySdk\` |
-| **Monorepo Path** | `packages/giorgigrdzelidze/laravel-shopify-sdk` |
+| **Shopify API** | `2026-01` |
 | **GitHub** | https://github.com/GiorgiGrdzelidze/laravel-shopify-sdk |
 
 ---
 
 ## ✨ Features
 
-- 🔐 **OAuth Authentication** - Authorization Code Grant & Client Credentials Grant (2026+) flows
-- 🪝 **Webhook Management** - Secure webhook verification and processing with HMAC-SHA256
-- ⚡ **GraphQL & REST APIs** - Unified client with automatic rate limiting and retries
-- 🔄 **Data Mirroring** - Sync products, orders, customers, and inventory to your database
-- 🎯 **Artisan Commands** - CLI tools for manual and scheduled synchronization
-- 🏪 **Multi-Store Support** - Manage multiple Shopify stores from a single application
-- 🎛️ **Single-Store Mode** - Optional simplified setup for single-store applications
-- 🧩 **Filament v5 Integration** - Optional admin panel resources and widgets (mobile-first)
-- 📊 **Rate Limiting** - Intelligent throttling for both REST and GraphQL APIs
-- 🧪 **Comprehensive Tests** - PHPUnit/Pest test suite included
-- 🌍 **Multi-Language** - Support for EN, KA, RU
-- 🔒 **Strict Types** - Full PHP strict typing for type safety
+<table>
+<tr>
+<td width="50%">
+
+### 🔐 Authentication
+- OAuth Authorization Code Grant
+- Client Credentials Grant (2026+)
+- Secure token encryption
+
+### ⚡ API Clients
+- GraphQL API (recommended)
+- REST API support
+- Automatic rate limiting
+- Retry with exponential backoff
+
+### 🔄 Data Synchronization
+- Products & Variants
+- Orders & Line Items
+- Customers
+- Inventory Levels
+- Collections
+- Discounts & Price Rules
+- Draft Orders
+- Fulfillments
+- Metafields
+
+</td>
+<td width="50%">
+
+### 🪝 Webhooks
+- HMAC-SHA256 verification
+- Idempotent processing
+- Event storage & audit
+
+### 🏪 Store Management
+- Multi-store support
+- Single-store mode
+- Store-level access control
+
+### 🎛️ Filament v5 Admin
+- 15+ Resources
+- Dashboard widgets
+- Sync action buttons
+- RBAC with roles/permissions
+- Activity logging
+
+### 🛡️ Enterprise Ready
+- PHP 8.3 strict types
+- Comprehensive tests
+- Full PHPDoc coverage
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -63,38 +118,41 @@
 
 | Requirement | Version |
 |------------|--------|
-| PHP | 8.2+ |
+| PHP | 8.3+ |
 | Laravel | 12.0+ |
-| Database | MySQL/PostgreSQL/SQLite |
-| Filament (optional) | 5.0+ |
+| Database | MySQL / PostgreSQL / SQLite |
+| Filament *(optional)* | 5.0+ |
 
 ### Compatibility Matrix
 
-✅ **Laravel 12** with PHP 8.2+  
-✅ **Filament v5** (optional, not required)  
-✅ **Shopify API** 2026-04 (configurable)
+| Component | Version | Status |
+|-----------|---------|--------|
+| **PHP** | 8.3+ | ✅ Required |
+| **Laravel** | 12.x | ✅ Required |
+| **Filament** | v5 | ⚡ Optional |
+| **Shopify API** | 2026-01 | ✅ Default |
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# 1. Install the package
+# 1️⃣ Install the package
 composer require giorgigrdzelidze/laravel-shopify-sdk
 
-# 2. Publish config and migrations
+# 2️⃣ Publish config and migrations
 php artisan vendor:publish --tag=shopify-config
 php artisan vendor:publish --tag=shopify-migrations
 
-# 3. Run migrations
+# 3️⃣ Run migrations
 php artisan migrate
 
-# 4. Configure your .env
+# 4️⃣ Configure your .env
 SHOPIFY_CLIENT_ID=your-client-id
 SHOPIFY_CLIENT_SECRET=your-client-secret
-SHOPIFY_API_VERSION=2026-04
+SHOPIFY_API_VERSION=2026-01
 
-# 5. Start syncing!
+# 5️⃣ Start syncing!
 php artisan shopify:sync:products
 ```
 
@@ -121,12 +179,6 @@ Publish and run migrations:
 ```bash
 php artisan vendor:publish --tag=shopify-migrations
 php artisan migrate
-```
-
-Optionally publish translations:
-
-```bash
-php artisan vendor:publish --tag=shopify-lang
 ```
 
 ### 📚 Namespace & Autoloading
@@ -158,8 +210,8 @@ composer dump-autoload
 Add these to your `.env` file:
 
 ```env
-# Shopify API Version (2026-04 is the latest stable)
-SHOPIFY_API_VERSION=2026-04
+# Shopify API Version
+SHOPIFY_API_VERSION=2026-01
 
 # Webhook Secret (required for webhooks)
 SHOPIFY_WEBHOOK_SECRET=your-webhook-secret
@@ -337,7 +389,7 @@ $client->rest($store)->delete($store, 'products/123.json');
 Register webhooks in your Shopify admin or via API:
 
 ```
-POST /admin/api/2026-04/webhooks.json
+POST /admin/api/2026-01/webhooks.json
 {
   "webhook": {
     "topic": "products/create",
@@ -523,7 +575,7 @@ The package automatically handles rate limiting for both REST and GraphQL APIs:
 
 ## 🔖 API Versioning
 
-Shopify guarantees stable API versions for **minimum 12 months**. The package defaults to `2026-04`.
+Shopify guarantees stable API versions for **minimum 12 months**. The package defaults to `2026-01`.
 
 ### Upgrading API Versions
 
@@ -1007,6 +1059,33 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 
 ## 📝 Changelog
 
+### 1.3.0 (2026-03-20)
+
+**New Features** 🚀
+
+- ✅ **Metafields Support** - Sync and manage product/collection/customer metafields
+- ✅ **Discounts & Price Rules** - Full CRUD for discount codes and automatic discounts
+- ✅ **Draft Orders** - Create, edit, send invoices, complete draft orders
+- ✅ **Fulfillments** - Track shipments, carriers, tracking numbers
+- ✅ **Push to Shopify** - Push discounts, draft orders, metafields to Shopify
+- ✅ **Enhanced Activity Logging** - All actions logged to ShopifyLog
+- ✅ **7 New Roles** - Marketing Manager, Fulfillment Staff added
+- ✅ **55+ Permissions** - Granular access control across all features
+- ✅ **New Navigation Groups** - Marketing, Operations, Reports
+- ✅ **4 New Sync Commands** - `shopify:sync:discounts`, `shopify:sync:draft-orders`, `shopify:sync:fulfillments`, `shopify:sync:metafields`
+
+**New Filament Resources:**
+- MetafieldResource - View/edit metafields by owner type
+- DiscountResource - Manage discount codes and price rules
+- DraftOrderResource - Create and manage draft orders
+- FulfillmentResource - Track order fulfillments
+
+**New Models:**
+- Metafield, MetafieldDefinition
+- Discount, DiscountCode
+- DraftOrder
+- Fulfillment, FulfillmentOrder, FulfillmentEvent
+
 ### 1.2.0 (2026-03-20)
 
 **New Features** 🚀
@@ -1054,7 +1133,6 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 - ✅ Artisan sync commands
 - ✅ Optional Filament v5 integration
 - ✅ Comprehensive test suite
-- ✅ Multi-language support (EN, KA, RU)
 - ✅ Strict types across entire codebase
 - ✅ Complete PHPDoc coverage
 
