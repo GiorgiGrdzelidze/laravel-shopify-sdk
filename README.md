@@ -42,51 +42,226 @@
 
 ## ✨ Features
 
-### 🔐 Authentication
-- **OAuth Authorization Code Grant** — Standard Shopify OAuth flow for public/custom apps
-- **Client Credentials Grant (2026+)** — Server-to-server auth for modern Shopify apps
-- **Secure Token Encryption** — Encrypted access tokens with automatic refresh
+<br>
 
-### ⚡ API Clients
-- **GraphQL API** — Recommended for optimal performance and flexibility
-- **REST API** — Full support for legacy endpoints
-- **Rate Limiting** — Intelligent throttling respects Shopify limits
-- **Retry Logic** — Exponential backoff for transient failures
+> ### 🔐 Authentication
+>
+> **OAuth Authorization Code Grant** — Standard Shopify OAuth flow for public/custom apps  
+> **Client Credentials Grant (2026+)** — Server-to-server auth for modern Shopify apps  
+> **Secure Token Encryption** — Encrypted access tokens with automatic refresh
 
-### 🔄 Data Synchronization
-- **Products & Variants** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
-- **Product Types** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
-- **Product Tags** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
-- **Orders & Line Items** — Sync ✅ | Read-only
-- **Customers** — Sync ✅ | Push ✅ | Update ✅
-- **Collections** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
-- **Discounts** — Sync ✅ | Push ✅ | Update ✅
-- **Draft Orders** — Sync ✅ | Push ✅ | Update ✅
-- **Fulfillments** — Sync ✅ | Read-only
-- **Metafields** — Sync ✅ | Push ✅ | Update ✅ | Delete ✅
-- **Inventory Levels** — Sync ✅ | Push ✅ | Update ✅
+<br>
 
-### 🪝 Webhooks
-- **HMAC-SHA256 Verification** — Cryptographic verification of webhook authenticity
-- **Idempotent Processing** — Safe handling of duplicate webhook deliveries
-- **Event Storage** — Full audit trail of all received webhooks
+> ### ⚡ API Clients
+>
+> **GraphQL API** — Recommended for optimal performance and flexibility  
+> **REST API** — Full support for legacy endpoints  
+> **Rate Limiting** — Intelligent throttling respects Shopify limits  
+> **Retry Logic** — Exponential backoff for transient failures
 
-### 🏪 Store Management
-- **Multi-Store Support** — Manage unlimited Shopify stores from one app
-- **Single-Store Mode** — Simplified setup for single-store applications
-- **Access Control** — Restrict users to specific stores
+<br>
 
-### 🎛️ Filament v5 Admin Panel
-- **17+ Resources** — Full CRUD for all Shopify entities
-- **Dashboard Widgets** — Real-time stats, top products, inventory alerts
-- **Sync Actions** — One-click sync buttons with confirmation dialogs
-- **RBAC** — 7 roles, 55+ permissions out of the box
-- **Activity Logging** — Complete audit trail of all actions
+> ### 🔄 Data Synchronization
+>
+> | Entity | Sync | Push | Update | Delete |
+> |:-------|:----:|:----:|:------:|:------:|
+> | Products & Variants | ✅ | ✅ | ✅ | ✅ |
+> | Product Types | ✅ | ✅ | ✅ | ✅ |
+> | Product Tags | ✅ | ✅ | ✅ | ✅ |
+> | Orders & Line Items | ✅ | — | — | — |
+> | Customers | ✅ | ✅ | ✅ | — |
+> | Collections | ✅ | ✅ | ✅ | ✅ |
+> | Discounts | ✅ | ✅ | ✅ | — |
+> | Draft Orders | ✅ | ✅ | ✅ | — |
+> | Fulfillments | ✅ | — | — | — |
+> | Metafields | ✅ | ✅ | ✅ | ✅ |
+> | Inventory Levels | ✅ | ✅ | ✅ | — |
 
-### 🛡️ Enterprise Ready
-- **PHP 8.3 Strict Types** — Full type safety across entire codebase
-- **Comprehensive Tests** — PHPUnit/Pest test suite included
-- **PHPDoc Coverage** — Complete documentation for IDE support
+<br>
+
+> ### 🪝 Webhooks
+>
+> **HMAC-SHA256 Verification** — Cryptographic verification of webhook authenticity  
+> **Idempotent Processing** — Safe handling of duplicate webhook deliveries  
+> **Event Storage** — Full audit trail of all received webhooks
+
+<br>
+
+> ### 🏪 Store Management
+>
+> **Multi-Store Support** — Manage unlimited Shopify stores from one app  
+> **Single-Store Mode** — Simplified setup for single-store applications  
+> **Access Control** — Restrict users to specific stores
+
+<br>
+
+> ### 🎛️ Filament v5 Admin Panel
+>
+> **17+ Resources** — Full CRUD for all Shopify entities  
+> **Dashboard Widgets** — Real-time stats, top products, inventory alerts  
+> **Sync Actions** — One-click sync buttons with confirmation dialogs  
+> **RBAC** — 7 roles, 55+ permissions out of the box  
+> **Activity Logging** — Complete audit trail of all actions
+
+<br>
+
+> ### 🛡️ Enterprise Ready
+>
+> **PHP 8.3 Strict Types** — Full type safety across entire codebase  
+> **Comprehensive Tests** — PHPUnit/Pest test suite included  
+> **PHPDoc Coverage** — Complete documentation for IDE support
+
+<br>
+
+---
+
+## 🎯 Artisan Commands
+
+<br>
+
+> ### 🔧 Setup & Configuration
+>
+> ```bash
+> # Create store from .env credentials (supports OAuth2 Client Credentials)
+> php artisan shopify:setup
+> php artisan shopify:setup --oauth --custom-domain=your-domain.com --currency=USD
+> 
+> # Assign Super Admin role to a user (required for first-time setup)
+> php artisan shopify:assign-admin your-email@example.com
+> ```
+
+<br>
+
+> ### 🔄 Sync Commands
+>
+> ```bash
+> # Sync individual entities
+> php artisan shopify:sync:products      # Products & variants
+> php artisan shopify:sync:orders        # Orders & line items
+> php artisan shopify:sync:customers     # Customer data
+> php artisan shopify:sync:collections   # Smart & custom collections
+> php artisan shopify:sync:inventory     # Inventory levels
+> php artisan shopify:sync:discounts     # Discount codes & rules
+> php artisan shopify:sync:draft-orders  # Draft orders
+> php artisan shopify:sync:fulfillments  # Fulfillment data
+> php artisan shopify:sync:metafields    # Product/collection metafields
+> 
+> # Sync everything at once
+> php artisan shopify:sync:all
+> 
+> # With options
+> php artisan shopify:sync:products --store=your-store.myshopify.com
+> php artisan shopify:sync:orders --date-from=2026-01-01 --date-to=2026-03-20
+> php artisan shopify:sync:products --dry-run  # Preview without syncing
+> ```
+
+<br>
+
+---
+
+## 🏁 Getting Started (5 Minutes)
+
+<br>
+
+> ### Step 1: Install & Configure
+>
+> ```bash
+> # Install the package
+> composer require giorgigrdzelidze/laravel-shopify-sdk
+> 
+> # Publish config and migrations
+> php artisan vendor:publish --tag=shopify-config
+> php artisan vendor:publish --tag=shopify-migrations
+> php artisan migrate
+> ```
+
+<br>
+
+> ### Step 2: Configure Environment
+>
+> Add to your `.env` file:
+>
+> ```env
+> # For Single Store (simplest setup)
+> SHOPIFY_SINGLE_STORE_ENABLED=true
+> SHOPIFY_SHOP_DOMAIN=your-store.myshopify.com
+> SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxx
+> 
+> # For OAuth / Multi-Store
+> SHOPIFY_CLIENT_ID=your-client-id
+> SHOPIFY_CLIENT_SECRET=your-client-secret
+> SHOPIFY_API_VERSION=2026-01
+> ```
+
+<br>
+
+> ### Step 3: Setup Store & Admin Access
+>
+> ```bash
+> # Create your store in the database
+> php artisan shopify:setup
+> 
+> # For 2026+ apps using OAuth2 Client Credentials:
+> php artisan shopify:setup --oauth --custom-domain=your-domain.com --currency=USD
+> 
+> # Seed roles and permissions
+> php artisan db:seed --class="LaravelShopifySdk\\Database\\Seeders\\ShopifyRolesAndPermissionsSeeder"
+> 
+> # 🔑 IMPORTANT: Assign yourself as Super Admin
+> php artisan shopify:assign-admin your-email@example.com
+> ```
+
+<br>
+
+> ### Step 4: Enable Filament (Optional)
+>
+> ```bash
+> # Install Filament if not already installed
+> composer require filament/filament:"^5.0"
+> ```
+>
+> Update `config/shopify.php`:
+>
+> ```php
+> 'filament' => [
+>     'enabled' => true,
+> ],
+> ```
+>
+> Add the trait to your User model:
+>
+> ```php
+> use LaravelShopifySdk\Traits\HasShopifyRoles;
+> 
+> class User extends Authenticatable
+> {
+>     use HasShopifyRoles;
+> }
+> ```
+
+<br>
+
+> ### Step 5: Start Syncing! 🚀
+>
+> ```bash
+> # Sync your products
+> php artisan shopify:sync:products
+> 
+> # Sync everything
+> php artisan shopify:sync:all
+> 
+> # Visit the admin panel
+> open http://your-app.test/admin
+> ```
+
+<br>
+
+> ### 🎉 You're Done!
+>
+> Your Shopify data is now synced and you have full admin access.  
+> Visit `/admin` to see your dashboard with products, orders, customers, and more.
+
+<br>
 
 ---
 
@@ -463,23 +638,25 @@ php artisan shopify:sync:products
 
 #### Scheduled Sync
 
-Add to `app/Console/Kernel.php`:
+Add to `routes/console.php` (Laravel 12+):
 
 ```php
-protected function schedule(Schedule $schedule): void
-{
-    // Sync products daily at 2 AM
-    $schedule->command('shopify:sync:products')->dailyAt('02:00');
-    
-    // Sync orders every hour
-    $schedule->command('shopify:sync:orders')->hourly();
-    
-    // Sync customers daily at 3 AM
-    $schedule->command('shopify:sync:customers')->dailyAt('03:00');
-    
-    // Sync inventory every 15 minutes
-    $schedule->command('shopify:sync:inventory')->everyFifteenMinutes();
-}
+use Illuminate\Support\Facades\Schedule;
+
+// Sync products daily at 2 AM
+Schedule::command('shopify:sync:products')->dailyAt('02:00');
+
+// Sync orders every hour
+Schedule::command('shopify:sync:orders')->hourly();
+
+// Sync customers daily at 3 AM
+Schedule::command('shopify:sync:customers')->dailyAt('03:00');
+
+// Sync inventory every 15 minutes
+Schedule::command('shopify:sync:inventory')->everyFifteenMinutes();
+
+// Sync everything daily at 1 AM
+Schedule::command('shopify:sync:all')->dailyAt('01:00');
 ```
 
 #### Programmatic Sync
