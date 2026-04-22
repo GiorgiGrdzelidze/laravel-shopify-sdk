@@ -82,7 +82,7 @@ class RestClient
     }
 
     /**
-     * Execute paginated GET request.
+     * Execute paginated GET request using Shopify's Link header cursor pagination.
      *
      * @param Store $store
      * @param string $endpoint
@@ -94,20 +94,21 @@ class RestClient
     public function paginate(Store $store, string $endpoint, array $params, callable $callback): void
     {
         $params['limit'] = $params['limit'] ?? 250;
-        $pageInfo = null;
+        $nextUrl = null;
 
         do {
-            if ($pageInfo) {
-                $params['page_info'] = $pageInfo;
+            if ($nextUrl) {
+                // On subsequent pages, use the full URL from Link header with only limit
+                $response = $this->requestRaw($store, 'GET', $nextUrl, ['limit' => $params['limit']], true);
+            } else {
+                $response = $this->requestRaw($store, 'GET', $this->buildUrl($store->shop_domain, $endpoint), $params);
             }
 
-            $response = $this->get($store, $endpoint, $params);
+            $callback($response->json() ?? []);
 
-            $callback($response);
+            $nextUrl = $this->extractNextPageUrl($response);
 
-            $pageInfo = $this->extractNextPageInfo($response);
-
-        } while ($pageInfo);
+        } while ($nextUrl);
     }
 
     /**
@@ -190,19 +191,107 @@ class RestClient
      */
     protected function buildUrl(string $shopDomain, string $endpoint): string
     {
-        $version = config('shopify.api_version', '2024-01');
+        $version = config('shopify.api_version', '2026-04');
         $endpoint = ltrim($endpoint, '/');
         return "https://{$shopDomain}/admin/api/{$version}/{$endpoint}";
     }
 
     /**
-     * Extract next page info from Link header.
+     * Execute HTTP request returning the full Response object (for header access).
      *
-     * @param array<string, mixed> $response
+     * @param Store $store
+     * @param string $method
+     * @param string $url
+     * @param array<string, mixed> $data
+     * @param bool $isFullUrl Whether $url is already a complete URL
+     * @return \Illuminate\Http\Client\Response
+     * @throws ShopifyApiException
+     */
+    protected function requestRaw(Store $store, string $method, string $url, array $data = [], bool $isFullUrl = false): \Illuminate\Http\Client\Response
+    {
+        $this->rateLimiter->throttle($store->shop_domain);
+
+        $attempt = 0;
+        $maxAttempts = config('shopify.client.retry_times', 3);
+
+        while ($attempt < $maxAttempts) {
+            $attempt++;
+
+            try {
+                $request = Http::withHeaders([
+                    'X-Shopify-Access-Token' => $store->access_token,
+                    'Content-Type' => 'application/json',
+                ])->timeout(config('shopify.client.timeout', 30));
+
+                $response = match ($method) {
+                    'GET' => $request->get($url, $data),
+                    default => throw new ShopifyApiException("Unsupported method for raw request: {$method}"),
+                };
+
+                if ($response->status() === 429) {
+                    $this->handleRateLimit($store->shop_domain, $response, $attempt, $maxAttempts);
+                    continue;
+                }
+
+                if ($response->serverError()) {
+                    $this->handleServerError($store->shop_domain, $response, $attempt, $maxAttempts);
+                    continue;
+                }
+
+                if (!$response->successful()) {
+                    throw new ShopifyApiException(
+                        "REST request failed: {$response->status()} - {$response->body()}"
+                    );
+                }
+
+                $this->updateRateLimitState($store->shop_domain, $response);
+
+                return $response;
+
+            } catch (\Exception $e) {
+                if ($attempt >= $maxAttempts) {
+                    throw new ShopifyApiException(
+                        "REST request failed after {$maxAttempts} attempts: {$e->getMessage()}",
+                        0,
+                        $e
+                    );
+                }
+
+                $this->backoff($attempt);
+            }
+        }
+
+        throw new ShopifyApiException('REST request failed');
+    }
+
+    /**
+     * Extract the "next" page URL from the Link header.
+     *
+     * Shopify returns: <https://...?page_info=abc&limit=250>; rel="next"
+     *
+     * @param \Illuminate\Http\Client\Response $response
      * @return string|null
      */
-    protected function extractNextPageInfo(array $response): ?string
+    protected function extractNextPageUrl(\Illuminate\Http\Client\Response $response): ?string
     {
+        $linkHeader = $response->header('Link');
+
+        if (!$linkHeader) {
+            return null;
+        }
+
+        // Parse Link header — may contain multiple entries separated by commas
+        $links = explode(',', $linkHeader);
+
+        foreach ($links as $link) {
+            if (str_contains($link, 'rel="next"')) {
+                // Extract URL from angle brackets: <URL>; rel="next"
+                if (preg_match('/<([^>]+)>/', trim($link), $matches)) {
+                    return $matches[1];
+                }
+            }
+        }
+
         return null;
     }
 

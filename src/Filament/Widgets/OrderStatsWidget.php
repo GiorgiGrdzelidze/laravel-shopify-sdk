@@ -8,8 +8,8 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
 use LaravelShopifySdk\Helpers\CurrencyHelper;
-use LaravelShopifySdk\Models\Orders\Order;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Orders\Order;
 
 class OrderStatsWidget extends BaseWidget
 {
@@ -46,6 +46,17 @@ class OrderStatsWidget extends BaseWidget
 
             $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
 
+            // Sparkline: single grouped query for last 7 days
+            $sparklineCounts = Order::where('processed_at', '>=', now()->subDays(6)->startOfDay())
+                ->selectRaw('DATE(processed_at) as date, COUNT(*) as cnt')
+                ->groupBy('date')
+                ->pluck('cnt', 'date')
+                ->toArray();
+            $sparkline = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $sparkline[] = (int) ($sparklineCounts[now()->subDays($i)->format('Y-m-d')] ?? 0);
+            }
+
             return [
                 'total_orders' => $totalOrders,
                 'total_revenue' => $totalRevenue,
@@ -58,6 +69,7 @@ class OrderStatsWidget extends BaseWidget
                 'pending_orders' => $pendingOrders,
                 'fulfilled_orders' => $fulfilledOrders,
                 'avg_order_value' => $avgOrderValue,
+                'sparkline' => $sparkline,
             ];
         });
 
@@ -65,11 +77,13 @@ class OrderStatsWidget extends BaseWidget
             Stat::make('Total Orders', number_format($stats['total_orders']))
                 ->description($stats['today_orders'] . ' today')
                 ->descriptionIcon('heroicon-m-shopping-cart')
+                ->chart($stats['sparkline'])
                 ->color('primary'),
 
             Stat::make('Total Revenue', CurrencyHelper::format($stats['total_revenue'], $currency))
                 ->description(CurrencyHelper::format($stats['today_revenue'], $currency) . ' today')
                 ->descriptionIcon('heroicon-m-banknotes')
+                ->chart($stats['sparkline'])
                 ->color('success'),
 
             Stat::make('This Week', number_format($stats['week_orders']) . ' orders')

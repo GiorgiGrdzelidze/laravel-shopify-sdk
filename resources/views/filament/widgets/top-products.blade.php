@@ -7,79 +7,85 @@
         @endphp
 
         <x-slot name="heading">
-            <div class="flex items-center gap-2">
-                <x-filament::icon
-                    icon="heroicon-o-trophy"
-                    class="h-5 w-5 text-amber-500"
-                />
-                <span>Top Selling Products</span>
+            <div class="flex items-center gap-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-amber-500/10 dark:bg-amber-500/15">
+                    <x-filament::icon
+                        icon="heroicon-o-trophy"
+                        class="w-4.5 h-4.5 text-amber-500"
+                    />
+                </span>
+                <span class="font-semibold tracking-tight">Top Selling Products</span>
             </div>
         </x-slot>
 
         @if (blank($products))
-            <div class="flex flex-col items-center justify-center py-12 text-center">
-                <x-filament::icon
-                    icon="heroicon-o-chart-bar"
-                    class="h-12 w-12 text-gray-400 dark:text-gray-500 mb-4"
-                />
+            <div class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-gray-100 dark:bg-white/5 mb-4">
+                    <x-filament::icon
+                        icon="heroicon-o-chart-bar"
+                        class="w-7 h-7 text-gray-400 dark:text-gray-500"
+                    />
+                </div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">No sales data available</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Sync orders to see top products</p>
             </div>
         @else
-            <div class="space-y-3">
+            <div class="space-y-2">
                 @foreach ($products as $index => $product)
                     @php
-                        $percentage = ($product->total_quantity / $maxQuantity) * 100;
-                        $stars = match (true) {
-                            $percentage >= 80 => 5,
-                            $percentage >= 60 => 4,
-                            $percentage >= 40 => 3,
-                            $percentage >= 20 => 2,
-                            default => 1,
+                        $percentage = round(($product->total_quantity / $maxQuantity) * 100);
+                        $isTop3 = $index < 3;
+                        $rankGradient = match ($index) {
+                            0 => 'bg-gradient-to-br from-amber-400 to-amber-600 shadow-amber-500/25',
+                            1 => 'bg-gradient-to-br from-gray-300 to-gray-500 shadow-gray-400/25',
+                            2 => 'bg-gradient-to-br from-amber-600 to-amber-800 shadow-amber-700/25',
+                            default => 'bg-gray-200 dark:bg-white/10',
                         };
-                        $rankColor = match ($index) {
-                            0 => 'bg-amber-500',
-                            1 => 'bg-gray-400',
-                            2 => 'bg-amber-700',
-                            default => 'bg-gray-300 dark:bg-gray-600',
-                        };
+                        $rankText = $isTop3 ? 'text-white font-bold' : 'text-gray-600 dark:text-gray-400 font-semibold';
                     @endphp
 
-                    <div class="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                    <div
+                        class="analytics-card group flex items-center gap-4 p-3.5 rounded-2xl
+                               bg-white/60 dark:bg-white/[0.03]
+                               ring-1 ring-black/[0.04] dark:ring-white/[0.06]
+                               hover:ring-primary-500/30 dark:hover:ring-primary-500/20
+                               hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.03] dark:hover:shadow-black/20
+                               transition-all duration-200 ease-out"
+                    >
                         {{-- Rank Badge --}}
                         <div class="flex-shrink-0">
-                            <span class="{{ $rankColor }} text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center shadow-sm">
-                                {{ $index + 1 }}
+                            <span class="{{ $rankGradient }} {{ $rankText }} text-xs w-8 h-8 rounded-full flex items-center justify-center {{ $isTop3 ? 'shadow-md' : '' }}"
+                                  aria-label="Rank {{ $index + 1 }}">
+                                #{{ $index + 1 }}
                             </span>
                         </div>
 
-                        {{-- Product Info --}}
+                        {{-- Product Info + Progress --}}
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                                 {{ $product->title }}
                             </p>
-                            <div class="flex items-center gap-2 mt-1">
-                                {{-- Star Rating --}}
-                                <div class="flex items-center gap-0.5">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <svg class="w-3.5 h-3.5 {{ $i <= $stars ? 'text-amber-400' : 'text-gray-300 dark:text-gray-600' }}" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                        </svg>
-                                    @endfor
+                            <div class="flex items-center gap-3 mt-2">
+                                {{-- Progress Bar --}}
+                                <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-white/[0.06] overflow-hidden">
+                                    <div class="progress-bar-fill h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-400"
+                                         style="width: {{ $percentage }}%; animation-delay: {{ $index * 0.08 }}s">
+                                    </div>
                                 </div>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ number_format($percentage, 0) }}% of top
+                                <span class="flex-shrink-0 text-xs text-gray-400 dark:text-gray-500 tabular-nums">
+                                    {{ $percentage }}%
                                 </span>
                             </div>
                         </div>
 
                         {{-- Stats --}}
-                        <div class="flex-shrink-0 text-right">
-                            <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                        <div class="flex-shrink-0 text-right space-y-1">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white tabular-nums">
                                 {{ \LaravelShopifySdk\Helpers\CurrencyHelper::format((float) $product->total_revenue, $currency) }}
                             </p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                            <span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-white/[0.06] px-2 py-0.5 text-xs tabular-nums text-gray-600 dark:text-gray-400">
                                 {{ number_format($product->total_quantity) }} sold
-                            </p>
+                            </span>
                         </div>
                     </div>
                 @endforeach

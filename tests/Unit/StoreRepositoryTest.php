@@ -4,7 +4,7 @@ namespace LaravelShopifySdk\Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use LaravelShopifySdk\Auth\StoreRepository;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Tests\TestCase;
 
 class StoreRepositoryTest extends TestCase

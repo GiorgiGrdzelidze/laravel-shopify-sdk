@@ -3,7 +3,7 @@
 namespace LaravelShopifySdk\Tests\Unit;
 
 use Illuminate\Support\Facades\DB;
-use LaravelShopifySdk\Models\Store;
+use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Tests\TestCase;
 
 class StoreCrudTest extends TestCase

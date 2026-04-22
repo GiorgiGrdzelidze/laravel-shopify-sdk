@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace LaravelShopifySdk\Sync;
 
 use LaravelShopifySdk\Clients\ShopifyClient;
+use LaravelShopifySdk\Events\SyncCompleted;
+use LaravelShopifySdk\Events\SyncFailed;
 use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Models\Sync\SyncRun;
 use Illuminate\Support\Facades\Log;
@@ -189,6 +191,8 @@ class SyncRunner
                 'counts' => $counts,
             ]);
 
+            SyncCompleted::dispatch($store, $entity, $syncRun, $counts, $duration);
+
         } catch (\Exception $e) {
             $duration = (int) ((microtime(true) - $startTime) * 1000);
 
@@ -203,6 +207,8 @@ class SyncRunner
                 'sync_run_id' => $syncRun->id,
                 'error' => $e->getMessage(),
             ]);
+
+            SyncFailed::dispatch($store, $entity, $syncRun, $e, $duration);
 
             throw $e;
         }

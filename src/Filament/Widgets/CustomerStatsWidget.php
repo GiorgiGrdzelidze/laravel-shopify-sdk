@@ -9,8 +9,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
 use LaravelShopifySdk\Helpers\CurrencyHelper;
 use LaravelShopifySdk\Models\Core\Customer;
-use LaravelShopifySdk\Models\Orders\Order;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Models\Orders\Order;
 
 class CustomerStatsWidget extends BaseWidget
 {
@@ -35,11 +35,23 @@ class CustomerStatsWidget extends BaseWidget
             $totalSpent = Order::sum('total_price');
             $avgSpentPerCustomer = $totalCustomers > 0 ? $totalSpent / $totalCustomers : 0;
 
+            // Sparkline: single grouped query for last 7 days
+            $sparklineCounts = Customer::where('created_at', '>=', now()->subDays(6)->startOfDay())
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as cnt')
+                ->groupBy('date')
+                ->pluck('cnt', 'date')
+                ->toArray();
+            $sparkline = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $sparkline[] = (int) ($sparklineCounts[now()->subDays($i)->format('Y-m-d')] ?? 0);
+            }
+
             return [
                 'total_customers' => $totalCustomers,
                 'new_this_month' => $newThisMonth,
                 'new_this_week' => $newThisWeek,
                 'avg_spent' => $avgSpentPerCustomer,
+                'sparkline' => $sparkline,
             ];
         });
 
@@ -47,6 +59,7 @@ class CustomerStatsWidget extends BaseWidget
             Stat::make('Total Customers', number_format($stats['total_customers']))
                 ->description('All synced customers')
                 ->descriptionIcon('heroicon-m-users')
+                ->chart($stats['sparkline'])
                 ->color('primary'),
 
             Stat::make('New This Month', number_format($stats['new_this_month']))

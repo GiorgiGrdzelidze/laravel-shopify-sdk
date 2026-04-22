@@ -79,15 +79,26 @@ class GraphQLClient
 
                 $this->updateRateLimitState($store->shop_domain, $response);
 
-                if (isset($data['errors']) && !empty($data['errors'])) {
-                    Log::warning('GraphQL query returned errors', [
-                        'shop_domain' => $store->shop_domain,
-                        'errors' => $data['errors'],
-                    ]);
+                if (!empty($data['errors'])) {
+                    throw ShopifyApiException::graphqlError(
+                        $store->shop_domain,
+                        $data['errors']
+                    );
                 }
 
                 return $data;
 
+            } catch (ShopifyApiException $e) {
+                // Don't retry deterministic API errors (GraphQL errors, auth failures)
+                if ($e->getErrorType() === ShopifyApiException::ERROR_GRAPHQL) {
+                    throw $e;
+                }
+
+                if ($attempt >= $maxAttempts) {
+                    throw $e;
+                }
+
+                $this->backoff($attempt);
             } catch (\Exception $e) {
                 if ($attempt >= $maxAttempts) {
                     throw new ShopifyApiException(
@@ -143,7 +154,7 @@ class GraphQLClient
      */
     protected function buildUrl(string $shopDomain): string
     {
-        $version = config('shopify.api_version', '2024-01');
+        $version = config('shopify.api_version', '2026-04');
         return "https://{$shopDomain}/admin/api/{$version}/graphql.json";
     }
 

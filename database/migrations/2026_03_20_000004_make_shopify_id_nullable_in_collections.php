@@ -8,12 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Make shopify_id nullable to allow local creation before Shopify sync
-        \DB::statement('ALTER TABLE shopify_collections MODIFY shopify_id VARCHAR(255) NULL');
+        Schema::table('shopify_collections', function (Blueprint $table) {
+            $table->string('shopify_id')->nullable()->change();
+        });
     }
 
     public function down(): void
     {
-        \DB::statement('ALTER TABLE shopify_collections MODIFY shopify_id VARCHAR(255) NOT NULL');
+        Schema::table('shopify_collections', function (Blueprint $table) {
+            $table->string('shopify_id')->nullable(false)->change();
+        });
     }
 };

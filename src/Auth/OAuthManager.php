@@ -159,6 +159,11 @@ class OAuthManager
             $shopDomain = $shopDomain . '.myshopify.com';
         }
 
+        // Validate final domain format: only alphanumeric, hyphens, dots allowed
+        if (!preg_match('/^[a-z0-9][a-z0-9\-]*\.myshopify\.com$/', $shopDomain)) {
+            throw new OAuthException("Invalid shop domain: {$shopDomain}");
+        }
+
         return $shopDomain;
     }
 

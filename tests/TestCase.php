@@ -40,5 +40,15 @@ abstract class TestCase extends Orchestra
         config()->set('shopify.oauth.client_id', 'test-client-id');
         config()->set('shopify.oauth.client_secret', 'test-client-secret');
         config()->set('shopify.webhooks.secret', 'test-webhook-secret');
+
+        // Minimize retry delays for tests
+        config()->set('shopify.client.retry_delay', 1);
+        config()->set('shopify.client.max_backoff', 1);
+        config()->set('shopify.client.timeout', 5);
+    }
+
+    protected function defineRoutes($router): void
+    {
+        $router->get('/home', fn () => 'Home')->name('home');
     }
 }

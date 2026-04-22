@@ -9,15 +9,8 @@ use LaravelShopifySdk\Exceptions\OAuthException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
-/**
- * OAuth Controller
- *
- * Handles OAuth installation and callback for Shopify apps.
- * Manages the Authorization Code Grant flow for multi-store installations.
- *
- * @package LaravelShopifySdk\Http\Controllers
- */
 class OAuthController extends Controller
 {
     public function __construct(
@@ -26,9 +19,6 @@ class OAuthController extends Controller
 
     /**
      * Handle OAuth installation request.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function install(Request $request)
     {
@@ -39,7 +29,11 @@ class OAuthController extends Controller
         }
 
         try {
-            $authUrl = $this->oauthManager->getAuthorizationUrl($shop);
+            $state = Str::random(40);
+            session(['shopify_oauth_state' => $state]);
+
+            $authUrl = $this->oauthManager->getAuthorizationUrl($shop, $state);
+
             return redirect($authUrl);
         } catch (\Exception $e) {
             Log::error('OAuth install failed', [
@@ -53,13 +47,18 @@ class OAuthController extends Controller
 
     /**
      * Handle OAuth callback.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function callback(Request $request)
     {
         try {
+            // Validate state parameter to prevent CSRF
+            $expectedState = session()->pull('shopify_oauth_state');
+            $receivedState = $request->input('state');
+
+            if (!$expectedState || !$receivedState || !hash_equals($expectedState, $receivedState)) {
+                throw new OAuthException('Invalid OAuth state parameter — possible CSRF attack');
+            }
+
             $store = $this->oauthManager->handleCallback($request->all());
 
             Log::info('OAuth callback successful', [

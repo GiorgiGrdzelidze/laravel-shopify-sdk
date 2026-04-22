@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LaravelShopifySdk\Jobs;
 
-use LaravelShopifySdk\Auth\StoreRepository;
 use LaravelShopifySdk\Models\Sync\WebhookEvent;
+use LaravelShopifySdk\Webhooks\WebhookHandlerInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,16 +13,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Process Webhook Job
- *
- * Asynchronously processes Shopify webhook events.
- * Handles app/uninstalled events and updates webhook status.
- *
- * @package LaravelShopifySdk\Jobs
- *
- * Processes incoming Shopify webhooks asynchronously.
- */
 class ProcessWebhookJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -31,7 +21,7 @@ class ProcessWebhookJob implements ShouldQueue
         public WebhookEvent $event
     ) {}
 
-    public function handle(StoreRepository $storeRepository): void
+    public function handle(): void
     {
         try {
             Log::info('Processing webhook', [
@@ -40,9 +30,7 @@ class ProcessWebhookJob implements ShouldQueue
                 'shop_domain' => $this->event->shop_domain,
             ]);
 
-            if ($this->event->topic === 'app/uninstalled') {
-                $storeRepository->markAsUninstalled($this->event->shop_domain);
-            }
+            $this->dispatch_to_handler();
 
             $this->event->update([
                 'status' => 'processed',
@@ -62,5 +50,34 @@ class ProcessWebhookJob implements ShouldQueue
 
             throw $e;
         }
+    }
+
+    /**
+     * Resolve and run the handler for this webhook topic.
+     *
+     * Handlers are registered in config('shopify.webhooks.handlers') as:
+     *   'app/uninstalled' => AppUninstalledHandler::class,
+     */
+    protected function dispatch_to_handler(): void
+    {
+        $handlers = config('shopify.webhooks.handlers', []);
+        $handlerClass = $handlers[$this->event->topic] ?? null;
+
+        if (!$handlerClass) {
+            Log::debug('No handler registered for webhook topic', [
+                'topic' => $this->event->topic,
+            ]);
+            return;
+        }
+
+        $handler = app($handlerClass);
+
+        if (!$handler instanceof WebhookHandlerInterface) {
+            throw new \InvalidArgumentException(
+                "Webhook handler [{$handlerClass}] must implement WebhookHandlerInterface"
+            );
+        }
+
+        $handler->handle($this->event);
     }
 }

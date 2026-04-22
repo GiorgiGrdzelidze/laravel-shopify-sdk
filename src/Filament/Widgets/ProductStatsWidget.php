@@ -30,7 +30,6 @@ class ProductStatsWidget extends BaseWidget
             $lowStockCount = 0;
             $outOfStockCount = 0;
 
-            // Calculate inventory stats from variants with inventory data
             Variant::whereHas('product', fn ($q) => $q->where('status', 'ACTIVE'))
                 ->chunk(500, function ($variants) use (&$lowStockCount, &$outOfStockCount) {
                     foreach ($variants as $variant) {
@@ -45,6 +44,17 @@ class ProductStatsWidget extends BaseWidget
                     }
                 });
 
+            // Sparkline: single grouped query for last 7 days
+            $sparklineCounts = Product::where('created_at', '>=', now()->subDays(6)->startOfDay())
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as cnt')
+                ->groupBy('date')
+                ->pluck('cnt', 'date')
+                ->toArray();
+            $sparkline = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $sparkline[] = (int) ($sparklineCounts[now()->subDays($i)->format('Y-m-d')] ?? 0);
+            }
+
             return [
                 'total_products' => $totalProducts,
                 'active_products' => $activeProducts,
@@ -53,17 +63,21 @@ class ProductStatsWidget extends BaseWidget
                 'total_variants' => $totalVariants,
                 'low_stock' => $lowStockCount,
                 'out_of_stock' => $outOfStockCount,
+                'sparkline' => $sparkline,
             ];
         });
+
+        $activePercent = round(($stats['active_products'] / max($stats['total_products'], 1)) * 100);
 
         return [
             Stat::make('Total Products', number_format($stats['total_products']))
                 ->description('All synced products')
                 ->descriptionIcon('heroicon-m-cube')
+                ->chart($stats['sparkline'])
                 ->color('primary'),
 
             Stat::make('Active', number_format($stats['active_products']))
-                ->description(round(($stats['active_products'] / max($stats['total_products'], 1)) * 100) . '% of total')
+                ->description($activePercent . '% of total')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 

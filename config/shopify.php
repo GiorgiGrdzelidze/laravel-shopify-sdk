@@ -87,6 +87,13 @@ return [
             'customers/update',
             'inventory_levels/update',
         ],
+
+        // Topic → Handler class mapping. Each handler must implement WebhookHandlerInterface.
+        // Add your own handlers here to process specific webhook topics.
+        'handlers' => [
+            'app/uninstalled' => \LaravelShopifySdk\Webhooks\Handlers\AppUninstalledHandler::class,
+            // 'orders/create' => \App\Webhooks\OrderCreatedHandler::class,
+        ],
     ],
 
     /*

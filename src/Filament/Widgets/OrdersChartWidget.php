@@ -23,9 +23,14 @@ class OrdersChartWidget extends ChartWidget
         return 'Orders Overview';
     }
 
+    public function getDescription(): ?string
+    {
+        return 'Order volume and revenue trends';
+    }
+
     public function getMaxHeight(): ?string
     {
-        return '300px';
+        return '320px';
     }
 
     protected function getFilters(): ?array
@@ -41,16 +46,31 @@ class OrdersChartWidget extends ChartWidget
     protected function getData(): array
     {
         $days = (int) $this->filter;
+        $startDate = Carbon::now()->subDays($days - 1)->startOfDay();
+
+        // Single grouped query instead of N individual queries
+        $dailyStats = Order::where('processed_at', '>=', $startDate)
+            ->selectRaw('DATE(processed_at) as date, COUNT(*) as order_count, COALESCE(SUM(total_price), 0) as revenue')
+            ->groupBy('date')
+            ->pluck('revenue', 'date')
+            ->toArray();
+
+        $dailyCounts = Order::where('processed_at', '>=', $startDate)
+            ->selectRaw('DATE(processed_at) as date, COUNT(*) as order_count')
+            ->groupBy('date')
+            ->pluck('order_count', 'date')
+            ->toArray();
+
         $labels = [];
         $ordersData = [];
         $revenueData = [];
 
         for ($i = $days - 1; $i >= 0; $i--) {
             $date = Carbon::now()->subDays($i);
+            $dateKey = $date->format('Y-m-d');
             $labels[] = $date->format($days > 30 ? 'M d' : 'D');
-
-            $ordersData[] = Order::whereDate('processed_at', $date)->count();
-            $revenueData[] = (float) Order::whereDate('processed_at', $date)->sum('total_price');
+            $ordersData[] = (int) ($dailyCounts[$dateKey] ?? 0);
+            $revenueData[] = (float) ($dailyStats[$dateKey] ?? 0);
         }
 
         return [
@@ -59,18 +79,30 @@ class OrdersChartWidget extends ChartWidget
                     'label' => 'Orders',
                     'data' => $ordersData,
                     'borderColor' => '#f59e0b',
-                    'backgroundColor' => 'rgba(245, 158, 11, 0.1)',
-                    'fill' => true,
+                    'backgroundColor' => 'transparent',
+                    'borderWidth' => 2,
+                    'fill' => false,
                     'tension' => 0.4,
+                    'pointRadius' => 0,
+                    'pointHoverRadius' => 5,
+                    'pointHoverBackgroundColor' => '#f59e0b',
+                    'pointHoverBorderColor' => '#fff',
+                    'pointHoverBorderWidth' => 2,
                     'yAxisID' => 'y',
                 ],
                 [
                     'label' => 'Revenue',
                     'data' => $revenueData,
                     'borderColor' => '#22c55e',
-                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
-                    'fill' => true,
+                    'backgroundColor' => 'transparent',
+                    'borderWidth' => 2,
+                    'fill' => false,
                     'tension' => 0.4,
+                    'pointRadius' => 0,
+                    'pointHoverRadius' => 5,
+                    'pointHoverBackgroundColor' => '#22c55e',
+                    'pointHoverBorderColor' => '#fff',
+                    'pointHoverBorderWidth' => 2,
                     'yAxisID' => 'y1',
                 ],
             ],
@@ -94,6 +126,16 @@ class OrdersChartWidget extends ChartWidget
                     'title' => [
                         'display' => true,
                         'text' => 'Orders',
+                        'color' => '#9ca3af',
+                    ],
+                    'grid' => [
+                        'color' => 'rgba(156, 163, 175, 0.08)',
+                    ],
+                    'ticks' => [
+                        'color' => '#9ca3af',
+                    ],
+                    'border' => [
+                        'display' => false,
                     ],
                 ],
                 'y1' => [
@@ -103,9 +145,28 @@ class OrdersChartWidget extends ChartWidget
                     'title' => [
                         'display' => true,
                         'text' => 'Revenue',
+                        'color' => '#9ca3af',
                     ],
                     'grid' => [
                         'drawOnChartArea' => false,
+                    ],
+                    'ticks' => [
+                        'color' => '#9ca3af',
+                    ],
+                    'border' => [
+                        'display' => false,
+                    ],
+                ],
+                'x' => [
+                    'grid' => [
+                        'display' => false,
+                    ],
+                    'ticks' => [
+                        'color' => '#9ca3af',
+                        'maxTicksLimit' => 12,
+                    ],
+                    'border' => [
+                        'display' => false,
                     ],
                 ],
             ],
@@ -113,7 +174,31 @@ class OrdersChartWidget extends ChartWidget
                 'legend' => [
                     'display' => true,
                     'position' => 'top',
+                    'align' => 'end',
+                    'labels' => [
+                        'usePointStyle' => true,
+                        'pointStyle' => 'circle',
+                        'padding' => 20,
+                        'color' => '#9ca3af',
+                    ],
                 ],
+                'tooltip' => [
+                    'backgroundColor' => '#1f2937',
+                    'titleColor' => '#f9fafb',
+                    'bodyColor' => '#d1d5db',
+                    'borderColor' => 'rgba(255, 255, 255, 0.1)',
+                    'borderWidth' => 1,
+                    'cornerRadius' => 8,
+                    'padding' => 12,
+                    'displayColors' => true,
+                    'usePointStyle' => true,
+                    'mode' => 'index',
+                    'intersect' => false,
+                ],
+            ],
+            'interaction' => [
+                'mode' => 'index',
+                'intersect' => false,
             ],
         ];
     }

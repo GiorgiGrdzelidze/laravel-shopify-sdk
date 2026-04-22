@@ -23,6 +23,7 @@ use LaravelShopifySdk\Commands\SyncDraftOrdersCommand;
 use LaravelShopifySdk\Commands\SyncFulfillmentsCommand;
 use LaravelShopifySdk\Commands\SyncMetafieldsCommand;
 use LaravelShopifySdk\Commands\AssignSuperAdminCommand;
+use LaravelShopifySdk\Commands\RetryWebhooksCommand;
 use LaravelShopifySdk\Sync\SyncRunner;
 use LaravelShopifySdk\Webhooks\WebhookVerifier;
 use Illuminate\Support\ServiceProvider;
@@ -251,6 +252,7 @@ class ShopifyServiceProvider extends ServiceProvider
                 SyncMetafieldsCommand::class,
                 SyncAllCommand::class,
                 AssignSuperAdminCommand::class,
+                RetryWebhooksCommand::class,
             ]);
         }
     }
