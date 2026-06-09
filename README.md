@@ -4,11 +4,11 @@
 
 # 🛍️ Laravel Shopify SDK
 
-### Production-Grade Shopify Integration for Laravel 12
+### Production-Grade Shopify Integration for Laravel 12 & 13
 
 <p align="center">
   <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.3%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.3+"></a>
-  <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12"></a>
+  <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-12%20%7C%2013-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12 | 13"></a>
   <a href="https://filamentphp.com"><img src="https://img.shields.io/badge/Filament-v5-FDAE4B?style=for-the-badge" alt="Filament v5"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="MIT License"></a>
 </p>
@@ -285,7 +285,7 @@
 | Requirement | Version |
 |------------|--------|
 | PHP | 8.3+ |
-| Laravel | 12.0+ |
+| Laravel | 12.x / 13.x |
 | Database | MySQL / PostgreSQL / SQLite |
 | Filament *(optional)* | 5.0+ |
 
@@ -294,7 +294,7 @@
 | Component | Version | Status |
 |-----------|---------|--------|
 | **PHP** | 8.3+ | ✅ Required |
-| **Laravel** | 12.x | ✅ Required |
+| **Laravel** | 12.x, 13.x | ✅ Required |
 | **Filament** | v5 | ⚡ Optional |
 | **Shopify API** | 2026-01 | ✅ Default |
 
@@ -1344,6 +1344,6 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 Built with ❤️ for the Laravel and Shopify communities.
 
 **Powered by:**
-- [Laravel 12](https://laravel.com)
+- [Laravel](https://laravel.com) (12 & 13)
 - [Shopify Admin API](https://shopify.dev/docs/api/admin)
 - [Filament v5](https://filamentphp.com) (optional)
