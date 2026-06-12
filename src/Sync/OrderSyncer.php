@@ -169,14 +169,164 @@ class OrderSyncer implements EntitySyncerInterface
                 id
                 name
                 email
+                phone
+                note
+                tags
+                sourceName
+                confirmationNumber
                 displayFinancialStatus
                 displayFulfillmentStatus
+                cancelledAt
+                cancelReason
+                closedAt
                 currencyCode
                 processedAt
                 updatedAt
+                createdAt
+                customer {
+                  id
+                  firstName
+                  lastName
+                  displayName
+                  email
+                  phone
+                }
+                shippingAddress {
+                  firstName
+                  lastName
+                  name
+                  phone
+                  company
+                  address1
+                  address2
+                  city
+                  province
+                  provinceCode
+                  country
+                  countryCodeV2
+                  zip
+                  latitude
+                  longitude
+                }
+                billingAddress {
+                  firstName
+                  lastName
+                  name
+                  phone
+                  company
+                  address1
+                  address2
+                  city
+                  province
+                  provinceCode
+                  country
+                  countryCodeV2
+                  zip
+                }
+                shippingLine {
+                  title
+                  code
+                  source
+                  carrierIdentifier
+                  originalPriceSet {
+                    shopMoney {
+                      amount
+                    }
+                  }
+                }
                 totalPriceSet {
                   shopMoney {
                     amount
+                  }
+                }
+                subtotalPriceSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                totalShippingPriceSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                totalTaxSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                totalDiscountsSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                totalRefundedSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                totalOutstandingSet {
+                  shopMoney {
+                    amount
+                  }
+                }
+                taxLines {
+                  title
+                  rate
+                  priceSet {
+                    shopMoney {
+                      amount
+                    }
+                  }
+                }
+                discountApplications(first: 10) {
+                  edges {
+                    node {
+                      __typename
+                      targetSelection
+                      targetType
+                      allocationMethod
+                      value {
+                        __typename
+                        ... on MoneyV2 {
+                          amount
+                          currencyCode
+                        }
+                        ... on PricingPercentageValue {
+                          percentage
+                        }
+                      }
+                      ... on DiscountCodeApplication {
+                        code
+                      }
+                      ... on ManualDiscountApplication {
+                        title
+                        description
+                      }
+                      ... on AutomaticDiscountApplication {
+                        title
+                      }
+                    }
+                  }
+                }
+                fulfillments(first: 10) {
+                  id
+                  status
+                  createdAt
+                  updatedAt
+                  trackingInfo {
+                    number
+                    url
+                    company
+                  }
+                }
+                refunds(first: 10) {
+                  id
+                  note
+                  createdAt
+                  totalRefundedSet {
+                    shopMoney {
+                      amount
+                    }
                   }
                 }
                 lineItems(first: 100) {
@@ -184,18 +334,66 @@ class OrderSyncer implements EntitySyncerInterface
                     node {
                       id
                       title
+                      name
+                      variantTitle
+                      vendor
                       quantity
+                      currentQuantity
+                      refundableQuantity
+                      unfulfilledQuantity
                       sku
+                      requiresShipping
+                      taxable
                       originalUnitPriceSet {
                         shopMoney {
                           amount
                         }
+                      }
+                      discountedUnitPriceSet {
+                        shopMoney {
+                          amount
+                        }
+                      }
+                      originalTotalSet {
+                        shopMoney {
+                          amount
+                        }
+                      }
+                      discountedTotalSet {
+                        shopMoney {
+                          amount
+                        }
+                      }
+                      totalDiscountSet {
+                        shopMoney {
+                          amount
+                        }
+                      }
+                      image {
+                        url
+                        altText
                       }
                       product {
                         id
                       }
                       variant {
                         id
+                      }
+                      taxLines {
+                        title
+                        rate
+                        priceSet {
+                          shopMoney {
+                            amount
+                          }
+                        }
+                      }
+                      discountAllocations {
+                        allocatedAmountSet {
+                          shopMoney {
+                            amount
+                          }
+                        }
                       }
                     }
                   }
