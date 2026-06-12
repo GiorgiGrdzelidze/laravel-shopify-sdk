@@ -23,10 +23,16 @@ use LaravelShopifySdk\Filament\Resources\UserResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Access\Role;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class UserResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'user';
 
     protected static ?string $model = null;
 

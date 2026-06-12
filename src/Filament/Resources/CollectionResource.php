@@ -28,10 +28,16 @@ use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Core\Collection;
 use LaravelShopifySdk\Models\Core\Product;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class CollectionResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'collection';
 
     protected static ?string $model = Collection::class;
 
@@ -40,8 +46,6 @@ class CollectionResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 5;
-
-    protected static ?string $navigationLabel = 'Collections';
 
     protected static function getPermissionPrefix(): string
     {

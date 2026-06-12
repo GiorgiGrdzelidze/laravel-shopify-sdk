@@ -14,11 +14,17 @@ use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\CustomerResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Core\Customer;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 use BackedEnum;
 
 class CustomerResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'customer';
 
     protected static ?string $model = Customer::class;
 

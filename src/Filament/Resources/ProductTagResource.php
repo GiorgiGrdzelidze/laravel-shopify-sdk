@@ -22,10 +22,16 @@ use LaravelShopifySdk\Filament\Resources\ProductTagResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Core\ProductTag;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class ProductTagResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'product_tag';
 
     protected static ?string $model = ProductTag::class;
 
@@ -34,8 +40,6 @@ class ProductTagResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 8;
-
-    protected static ?string $navigationLabel = 'Product Tags';
 
     protected static ?string $modelLabel = 'Product Tag';
 

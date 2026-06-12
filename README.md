@@ -40,6 +40,53 @@
 
 ---
 
+## ⬆️ Upgrading from v1.x to v2.0
+
+v2.0 is the first conflict-safe release for apps that already have their own
+`/admin/orders`, `/admin/products`, `/admin/customers` etc. Highlights:
+
+- **Slug prefix** — SDK resources now live at `/admin/shopify/orders`,
+  `/admin/shopify/products`, etc. by default. Set
+  `'slug_prefix' => null` in `config/shopify.php` to keep v1 URLs.
+- **Translation-driven labels** — nav and model labels read from the package's
+  `shopify` lang files (`en/ka/ru` shipped). Republish if you customised them:
+  `php artisan vendor:publish --tag=shopify-translations`.
+- **Config-driven toggles** — every resource, page and widget has a master
+  switch in `config/shopify.php` → `filament.resources/pages/widgets`. User /
+  Role / Permission default to `false` (most apps have their own RBAC).
+- **`ShopifyPanel::registerOn()` helper** — replaces ~40 lines of manual
+  resource/widget registration in your `AdminPanelProvider` with one line.
+- **No method-level navigation overrides** — DraftOrder / Fulfillment /
+  Discount / Metafield now respect the `$navigationGroup` static property
+  again (fixed in v1.7.1, baseline for v2.0).
+
+### Quick upgrade
+
+```bash
+composer require giorgigrdzelidze/laravel-shopify-sdk:^2.0
+php artisan vendor:publish --tag=shopify-config --force
+```
+
+Then in your `AdminPanelProvider::panel()`:
+
+```php
+use LaravelShopifySdk\Filament\ShopifyPanel;
+
+return ShopifyPanel::registerOn($panel /* ...your existing config... */);
+```
+
+### Keeping v1 URLs (no slug prefix)
+
+```php
+// config/shopify.php
+'filament' => [
+    'enabled' => true,
+    'slug_prefix' => null,
+],
+```
+
+---
+
 ## ✨ Features
 
 <br>
@@ -225,8 +272,31 @@
 > ```php
 > 'filament' => [
 >     'enabled' => true,
+>     'slug_prefix' => 'shopify',         // default — see below
+>     'navigation_group' => null,         // null = SDK semantic defaults
 > ],
 > ```
+>
+> Wire the SDK resources into your admin panel with **one line**:
+>
+> ```php
+> use LaravelShopifySdk\Filament\ShopifyPanel;
+>
+> public function panel(Panel $panel): Panel
+> {
+>     return ShopifyPanel::registerOn(
+>         $panel
+>             ->default()
+>             ->id('admin')
+>             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+>             // ... your own panel config
+>     );
+> }
+> ```
+>
+> `ShopifyPanel::registerOn()` reads the config, filters resources/pages/widgets
+> by per-key toggles, and applies the navigation group override. If
+> `shopify.filament.enabled` is `false`, it returns the panel untouched.
 >
 > Add the trait to your User model:
 >

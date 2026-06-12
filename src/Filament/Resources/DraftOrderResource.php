@@ -21,14 +21,19 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Models\Core\Customer;
 use LaravelShopifySdk\Models\Orders\DraftOrder;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class DraftOrderResource extends Resource
 {
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'draft_order';
+
     protected static ?string $model = DraftOrder::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
-
-    protected static ?string $navigationLabel = 'Draft Orders';
 
     protected static ?int $navigationSort = 25;
 

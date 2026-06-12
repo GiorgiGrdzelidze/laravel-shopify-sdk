@@ -33,11 +33,17 @@ use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Core\Product;
 use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Services\ProductService;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 use BackedEnum;
 
 class ProductResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'product';
 
     protected static ?string $model = Product::class;
 

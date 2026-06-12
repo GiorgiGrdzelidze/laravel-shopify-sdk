@@ -25,12 +25,18 @@ use LaravelShopifySdk\Filament\Resources\StoreResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Sync\SyncRunner;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 use Illuminate\Support\Facades\Http;
 use BackedEnum;
 
 class StoreResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'store';
 
     protected static ?string $model = Store::class;
 

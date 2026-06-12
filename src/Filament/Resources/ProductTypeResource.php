@@ -22,10 +22,16 @@ use LaravelShopifySdk\Filament\Resources\ProductTypeResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Core\ProductType;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class ProductTypeResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'product_type';
 
     protected static ?string $model = ProductType::class;
 
@@ -34,8 +40,6 @@ class ProductTypeResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     protected static ?int $navigationSort = 7;
-
-    protected static ?string $navigationLabel = 'Product Types';
 
     protected static ?string $modelLabel = 'Product Type';
 

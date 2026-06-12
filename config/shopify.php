@@ -181,6 +181,20 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Slug Prefix
+        |--------------------------------------------------------------------------
+        |
+        | Prefix added to every SDK resource slug to prevent URL collisions with
+        | the consumer app's own resources. With the default 'shopify' prefix,
+        | the SDK's OrderResource lives at /admin/shopify/orders instead of
+        | /admin/orders — keeping the consumer's existing /admin/orders route
+        | intact. Set to null to use bare slugs (only safe for SDK-only apps).
+        |
+        */
+        'slug_prefix' => env('SHOPIFY_FILAMENT_SLUG_PREFIX', 'shopify'),
+
+        /*
+        |--------------------------------------------------------------------------
         | Sandbox CRUD Mode (Testing Only)
         |--------------------------------------------------------------------------
         |
@@ -191,22 +205,50 @@ return [
         */
         'testing_crud_enabled' => env('SHOPIFY_TESTING_CRUD_ENABLED', false),
 
+        /*
+        |--------------------------------------------------------------------------
+        | Resources, Pages, Widgets
+        |--------------------------------------------------------------------------
+        |
+        | Per-class master switches. Set any key to false to skip registration.
+        | User/Role/Permission resources default to false since most consumer
+        | apps already ship their own RBAC and would see duplicate menus.
+        |
+        */
+
         'resources' => [
-            'stores' => true,
-            'products' => true,
-            'variants' => true,
-            'orders' => true,
-            'customers' => true,
-            'locations' => true,
-            'inventory_levels' => true,
-            'webhook_events' => true,
-            'sync_runs' => true,
+            'store' => true,
+            'product' => true,
+            'order' => true,
+            'draft_order' => true,
+            'fulfillment' => true,
+            'discount' => true,
+            'customer' => true,
+            'collection' => true,
+            'metafield' => true,
+            'product_type' => true,
+            'product_tag' => true,
+            'shopify_log' => true,
+            'user' => false,
+            'role' => false,
+            'permission' => false,
+        ],
+
+        'pages' => [
+            'analytics' => true,
         ],
 
         'widgets' => [
+            'orders_chart' => true,
+            'products_chart' => true,
+            'order_stats' => true,
+            'product_stats' => true,
+            'customer_stats' => true,
+            'shopify_stats' => true,
+            'top_products' => true,
+            'inventory_alert' => true,
+            'store_overview' => true,
             'sync_health' => true,
-            'orders_stats' => true,
-            'products_stats' => true,
         ],
 
         'cache' => [

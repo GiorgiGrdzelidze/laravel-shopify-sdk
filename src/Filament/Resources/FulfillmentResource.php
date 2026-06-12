@@ -13,14 +13,19 @@ use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Models\Orders\Fulfillment;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class FulfillmentResource extends Resource
 {
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'fulfillment';
+
     protected static ?string $model = Fulfillment::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-truck';
-
-    protected static ?string $navigationLabel = 'Fulfillments';
 
     protected static ?int $navigationSort = 26;
 

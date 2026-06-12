@@ -21,14 +21,19 @@ use Filament\Tables\Table;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Models\Marketing\Discount;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class DiscountResource extends Resource
 {
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'discount';
+
     protected static ?string $model = Discount::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-tag';
-
-    protected static ?string $navigationLabel = 'Discounts';
 
     protected static ?int $navigationSort = 35;
 

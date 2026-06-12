@@ -25,10 +25,16 @@ use LaravelShopifySdk\Filament\Resources\RoleResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Access\Permission;
 use LaravelShopifySdk\Models\Access\Role;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class RoleResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'role';
 
     protected static ?string $model = Role::class;
 

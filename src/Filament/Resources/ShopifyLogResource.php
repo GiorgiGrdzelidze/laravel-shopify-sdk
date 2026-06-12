@@ -14,10 +14,16 @@ use LaravelShopifySdk\Filament\NavigationIcon;
 use LaravelShopifySdk\Filament\Resources\ShopifyLogResource\Pages;
 use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Models\Sync\ShopifyLog;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class ShopifyLogResource extends Resource
 {
     use HasShopifyPermissions;
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'shopify_log';
 
     protected static ?string $model = ShopifyLog::class;
 
@@ -26,8 +32,6 @@ class ShopifyLogResource extends Resource
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Reports;
 
     protected static ?int $navigationSort = 9;
-
-    protected static ?string $navigationLabel = 'Activity Logs';
 
     protected static ?string $modelLabel = 'Activity Log';
 

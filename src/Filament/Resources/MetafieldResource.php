@@ -21,14 +21,19 @@ use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Models\Marketing\Metafield;
 use LaravelShopifySdk\Models\Marketing\MetafieldDefinition;
 use LaravelShopifySdk\Models\Core\Store;
+use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
+use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
 
 class MetafieldResource extends Resource
 {
+    use HasShopifyLabels;
+    use HasShopifySlug;
+
+    protected static ?string $resourceKey = 'metafield';
+
     protected static ?string $model = Metafield::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-code-bracket';
-
-    protected static ?string $navigationLabel = 'Metafields';
 
     protected static ?int $navigationSort = 15;
 
