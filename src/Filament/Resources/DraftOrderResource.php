@@ -32,10 +32,7 @@ class DraftOrderResource extends Resource
 
     protected static ?int $navigationSort = 25;
 
-    public static function getNavigationGroup(): ?string
-    {
-        return NavigationGroup::Operations->value;
-    }
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Operations;
 
     public static function form(Schema $schema): Schema
     {

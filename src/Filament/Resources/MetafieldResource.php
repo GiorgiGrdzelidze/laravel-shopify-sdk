@@ -32,10 +32,7 @@ class MetafieldResource extends Resource
 
     protected static ?int $navigationSort = 15;
 
-    public static function getNavigationGroup(): ?string
-    {
-        return NavigationGroup::Shopify->value;
-    }
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
 
     public static function form(Schema $schema): Schema
     {

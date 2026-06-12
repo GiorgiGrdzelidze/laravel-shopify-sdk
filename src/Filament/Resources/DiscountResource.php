@@ -32,10 +32,7 @@ class DiscountResource extends Resource
 
     protected static ?int $navigationSort = 35;
 
-    public static function getNavigationGroup(): ?string
-    {
-        return NavigationGroup::Marketing->value;
-    }
+    protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Marketing;
 
     public static function form(Schema $schema): Schema
     {
