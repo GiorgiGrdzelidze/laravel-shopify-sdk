@@ -23,9 +23,11 @@ use LaravelShopifySdk\Models\Marketing\MetafieldDefinition;
 use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
 use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 
 class MetafieldResource extends Resource
 {
+    use HasShopifyPermissions;
     use HasShopifyLabels;
     use HasShopifySlug;
 
@@ -38,6 +40,11 @@ class MetafieldResource extends Resource
     protected static ?int $navigationSort = 15;
 
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'metafields';
+    }
 
     public static function form(Schema $schema): Schema
     {

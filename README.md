@@ -994,10 +994,19 @@ Built-in role-based access control for multi-user environments:
 - `stores.*` - View, create, edit, delete stores
 - `products.*` - View, create, edit, delete, push, pull products
 - `orders.*` - View, edit, delete orders
+- `draft_orders.*` - View, create, edit, delete draft orders
+- `fulfillments.*` - View fulfillments
 - `customers.*` - View, edit, delete customers
+- `collections.*` - View, create, edit, delete collections
+- `discounts.*` - View, create, edit, delete discounts
+- `metafields.*` - View, create, edit, delete metafields
+- `analytics.*` - View the analytics dashboard
 - `inventory.*` - View, edit inventory
 - `sync.*` - Run sync, view logs
 - `settings.*` - Manage roles, permissions, users
+
+> Every Filament resource and the Analytics page enforce these via `hasShopifyPermission()`.
+> Apps whose User model does **not** implement that method keep full access (backward compatible).
 
 **Setup:**
 

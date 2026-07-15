@@ -7,6 +7,7 @@ namespace LaravelShopifySdk\Filament\Pages;
 use Filament\Pages\Page;
 use LaravelShopifySdk\Filament\NavigationGroup;
 use LaravelShopifySdk\Filament\NavigationIcon;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 use LaravelShopifySdk\Filament\Widgets\CustomerStatsWidget;
 use LaravelShopifySdk\Filament\Widgets\InventoryAlertWidget;
 use LaravelShopifySdk\Filament\Widgets\OrdersChartWidget;
@@ -17,6 +18,8 @@ use LaravelShopifySdk\Filament\Widgets\TopProductsWidget;
 
 class Analytics extends Page
 {
+    use HasShopifyPermissions;
+
     protected static string|\BackedEnum|null $navigationIcon = NavigationIcon::OutlinedChartBar;
 
     protected string $view = 'shopify::filament.pages.analytics';
@@ -28,6 +31,16 @@ class Analytics extends Page
     protected static ?int $navigationSort = 10;
 
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Shopify;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'analytics';
+    }
+
+    public static function canAccess(): bool
+    {
+        return static::checkPermission(static::getPermissionPrefix() . '.view');
+    }
 
     protected function getHeaderWidgets(): array
     {

@@ -15,9 +15,11 @@ use LaravelShopifySdk\Models\Orders\Fulfillment;
 use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
 use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 
 class FulfillmentResource extends Resource
 {
+    use HasShopifyPermissions;
     use HasShopifyLabels;
     use HasShopifySlug;
 
@@ -30,6 +32,11 @@ class FulfillmentResource extends Resource
     protected static ?int $navigationSort = 26;
 
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Operations;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'fulfillments';
+    }
 
     public static function table(Table $table): Table
     {

@@ -23,9 +23,11 @@ use LaravelShopifySdk\Models\Orders\DraftOrder;
 use LaravelShopifySdk\Models\Core\Store;
 use LaravelShopifySdk\Filament\Concerns\HasShopifyLabels;
 use LaravelShopifySdk\Filament\Concerns\HasShopifySlug;
+use LaravelShopifySdk\Filament\Traits\HasShopifyPermissions;
 
 class DraftOrderResource extends Resource
 {
+    use HasShopifyPermissions;
     use HasShopifyLabels;
     use HasShopifySlug;
 
@@ -38,6 +40,11 @@ class DraftOrderResource extends Resource
     protected static ?int $navigationSort = 25;
 
     protected static \UnitEnum|string|null $navigationGroup = NavigationGroup::Operations;
+
+    protected static function getPermissionPrefix(): string
+    {
+        return 'draft_orders';
+    }
 
     public static function form(Schema $schema): Schema
     {
