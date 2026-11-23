@@ -11,6 +11,7 @@
   <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-12%20%7C%2013-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12 | 13"></a>
   <a href="https://filamentphp.com"><img src="https://img.shields.io/badge/Filament-v5-FDAE4B?style=for-the-badge" alt="Filament v5"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="MIT License"></a>
+  <a href="https://github.com/GiorgiGrdzelidze/laravel-shopify-sdk/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/GiorgiGrdzelidze/laravel-shopify-sdk/ci.yml?branch=main&style=for-the-badge&label=Tests" alt="Tests"></a>
 </p>
 
 <p align="center">
